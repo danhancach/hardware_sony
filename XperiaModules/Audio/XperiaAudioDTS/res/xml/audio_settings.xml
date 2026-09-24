@@ -6,12 +6,14 @@
 
     <com.android.settingslib.widget.TopIntroPreference
         android:key="audio_top_intro"
-        android:title="@string/audio_menu_header"/>
+        android:title="@string/audio_menu_header" />
 
-    <PreferenceCategory>
+    <com.android.settingslib.widget.UntitledPreferenceCategory
+        app:iconSpaceReserved="false">
 
         <Preference
             android:key="audio_dtsx"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_dtsx"
             android:title="@string/dtsx_title"
             android:summary="@string/dtsx_summary"
@@ -23,6 +25,7 @@
 
         <Preference
             android:key="audio_threesixtyupmix"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_threesixtyupmix"
             android:title="@string/threesixtyupmix_title"
             android:summary="@string/threesixtyupmix_summary"
@@ -37,10 +40,9 @@
             android:title="@string/effectpriority_title"
             android:summary="@string/effectpriority_summary"
             android:selectable="false"
-            android:persistent="false">
-        </Preference>
+            android:persistent="false" />
 
-    </PreferenceCategory>
+    </com.android.settingslib.widget.UntitledPreferenceCategory>
 
     <com.android.settingslib.widget.FooterPreference
         android:key="audio_setting_footer"

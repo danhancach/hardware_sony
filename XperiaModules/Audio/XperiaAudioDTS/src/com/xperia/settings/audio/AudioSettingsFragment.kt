@@ -7,20 +7,19 @@
 package com.xperia.settings.audio
 
 import android.os.Bundle
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+
+import com.android.settingslib.widget.SettingsBasePreferenceFragment
+
 import com.xperia.settings.audio.R
 
-class AudioSettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
+class AudioSettingsFragment : SettingsBasePreferenceFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.audio_settings, rootKey)
- 
-        val yourPreference: Preference? = findPreference("android:key")
-        yourPreference?.onPreferenceChangeListener = this
     }
 
-    override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-        return true
+    override fun onResume() {
+        super.onResume()
+        activity?.title = getString(R.string.audio_menu_title)
     }
 }

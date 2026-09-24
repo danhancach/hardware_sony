@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 XperiaLabs Project
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<resources>
+    <string name="app_name">Xperia Audio</string>
+
+    <string name="audio_menu_title">Cài đặt âm thanh</string>
+    <string name="audio_menu_header">Chất lượng âm thanh</string>
+    <string name="dtsx_title">DTS:X Ultra</string>
+    <string name="dtsx_summary">DTS:X Ultra nâng cao chất lượng âm thanh với hiệu ứng không gian 3D và equalizer tùy chỉnh, mang lại trải nghiệm giải trí sống động hơn</string>
+    <string name="threesixtyupmix_title">360 Upmix</string>
+    <string name="threesixtyupmix_summary">Với công nghệ 360 Reality Audio Upmix (360 Upmix) của Sony, bạn có thể thưởng thức âm thanh không gian từ nguồn stereo thông thường</string>
+    <string name="effectpriority_title">Ưu tiên hiệu ứng</string>
+    <string name="effectpriority_summary">Ứng dụng 360 Upmix luôn được ưu tiên hơn các hiệu ứng khác bạn đã bật (các cài đặt khác trên màn hình này kết hợp 360 Upmix hoặc chỉ 360 Upmix) cho âm thanh media của ứng dụng.</string>
+    <string name="audio_menu_footer">Khi phát nội dung có tăng cường âm thanh, thông tin của nội dung sẽ được ưu tiên hơn cài đặt trên màn hình này. Nội dung high resolution vẫn phát đúng khi tắt các tăng cường âm thanh.\n\n\n\nVề Spatial Audio\nĐể bật 360 Reality Audio, hãy bật Spatial Sound.\nTất cả cài đặt trên màn hình này hỗ trợ Spatial Audio.</string>
+</resources>

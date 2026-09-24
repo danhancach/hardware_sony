@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 XperiaLabs Project
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<resources>
+    <string name="app_name">Xperia Audio</string>
+
+    <string name="audio_menu_title">Cài đặt âm thanh</string>
+    <string name="audio_menu_header">Chất lượng âm thanh</string>
+    <string name="dolby_title">Dolby Sound</string>
+    <string name="dolby_summary">Tùy chỉnh Dolby Sound để trải nghiệm âm thanh đa chiều, bao trùm — đưa phim, nhạc và game thêm sống động</string>
+    <string name="threesixtyra_title">360 Reality Audio</string>
+    <string name="threesixtyra_summary">Chạm để cá nhân hóa chất lượng âm thanh</string>
+    <string name="threesixtyupmix_title">360 Upmix</string>
+    <string name="threesixtyupmix_summary">Với công nghệ 360 Reality Audio Upmix (360 Upmix) của Sony, bạn có thể thưởng thức âm thanh không gian từ nguồn stereo thông thường\nXem 360 Reality Audio để biết thêm chi tiết.</string>
+    <string name="effectpriority_title">Ưu tiên hiệu ứng</string>
+    <string name="effectpriority_summary">Ứng dụng 360 Upmix luôn được ưu tiên hơn các hiệu ứng khác bạn đã bật (Dolby Sound kết hợp 360 Upmix hoặc chỉ 360 Upmix) cho âm thanh media của ứng dụng.</string>
+    <string name="audio_menu_footer">Khi phát nội dung Dolby Sound hoặc 360 Reality Audio, thông tin của nội dung sẽ được ưu tiên hơn cài đặt trên màn hình này. Nội dung high resolution vẫn phát đúng khi tắt cả Dolby Sound và 360 Upmix.\n\n\n\nVề Spatial Audio\nĐể bật 360 Reality Audio, hãy bật Spatial Sound.</string>
+</resources>
