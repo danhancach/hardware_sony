@@ -8,25 +8,25 @@
     <com.android.settingslib.widget.LayoutPreference
         android:key="creator_mode_preview"
         android:layout="@layout/creator_mode_preview"
-        android:selectable="false" />
+        android:selectable="false"
+        app:allowDividerBelow="false" />
 
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:title="@string/display_cm_header">
-
-        <com.xperia.settings.preferences.SecureSettingSwitchPreference
-                          app:key="switchCreatorMode"
-                          app:iconSpaceReserved="false"
-                          app:title="@string/display_cm_enable"
-                          app:summary="@string/display_cm_summary" />
+    <com.android.settingslib.widget.UntitledPreferenceCategory
+        app:iconSpaceReserved="false">
 
         <com.xperia.settings.preferences.SecureSettingSwitchPreference
-                          app:key="switchXRealityMode"
-                          app:iconSpaceReserved="false"
-                          app:title="@string/display_xrp_enable"
-                          app:summary="@string/display_xrp_summary" />
+            app:key="switchCreatorMode"
+            app:iconSpaceReserved="false"
+            app:title="@string/display_cm_enable"
+            app:summary="@string/display_cm_summary" />
 
-    </PreferenceCategory>
+        <com.xperia.settings.preferences.SecureSettingSwitchPreference
+            app:key="switchXRealityMode"
+            app:iconSpaceReserved="false"
+            app:title="@string/display_xrp_enable"
+            app:summary="@string/display_xrp_summary" />
+
+    </com.android.settingslib.widget.UntitledPreferenceCategory>
 
     <com.android.settingslib.widget.FooterPreference
         android:key="display_setting_footer"

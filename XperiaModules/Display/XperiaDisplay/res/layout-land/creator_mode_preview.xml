@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 XperiaLabs Project
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="true"
+    android:clipToPadding="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/viewpager_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipChildren="true"
+        android:clipToPadding="true">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?android:attr/colorBackground"
+            android:clipChildren="true"
+            android:clipToPadding="true" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/creator_mode_preview_nav_height">
+
+        <FrameLayout
+            android:id="@+id/arrow_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/creator_mode_preview_nav_height"
+            android:layout_gravity="center_vertical|start"
+            android:contentDescription="@string/creator_mode_previous"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_left" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/viewGroup"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/creator_mode_preview_nav_height"
+            android:gravity="center" />
+
+        <FrameLayout
+            android:id="@+id/arrow_next"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/creator_mode_preview_nav_height"
+            android:layout_gravity="center_vertical|end"
+            android:contentDescription="@string/creator_mode_next"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_right" />
+        </FrameLayout>
+    </FrameLayout>
+
+</LinearLayout>
