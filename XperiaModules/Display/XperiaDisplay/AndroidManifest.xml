@@ -20,6 +20,7 @@
         android:targetSdkVersion="34"/>
 
     <application
+        android:name=".XperiaDisplayApplication"
         android:label="@string/app_name"
         android:persistent="true"
         android:defaultToDeviceProtectedStorage="true"
@@ -34,6 +35,13 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".PackageReplacedReceiver"
+                  android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -42,6 +50,7 @@
         <activity
                 android:name=".DisplaySettingsActivity"
                 android:exported="false"
+                android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize|density"
                 android:theme="@style/Theme.SubSettingsBase"
                 android:label="@string/display_settings_title">
             <intent-filter>

@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2023-2024 XperiaLabs Project
- * Copyright (C) 2022 The LineageOS Project
+ * Copyright (C) 2024 XperiaLabs Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,9 +10,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-class BootCompletedReceiver : BroadcastReceiver() {
+class PackageReplacedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d(TAG, "Starting")
+        Log.i(TAG, "APK updated, reinitializing display modes")
         DisplayModeInitializer.reset()
         DisplayModeInitializer.ensureInitialized(context)
     }

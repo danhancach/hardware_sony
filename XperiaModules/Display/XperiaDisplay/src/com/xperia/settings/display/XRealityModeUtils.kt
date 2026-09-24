@@ -6,99 +6,89 @@
 
 package com.xperia.settings.display
 
-import android.app.Activity
-import android.app.ActivityTaskManager
 import android.content.Context
-import android.os.RemoteException
-import android.provider.Settings
-import android.util.Log
-import android.view.View
-
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
-import androidx.core.content.ContextCompat
 import android.hardware.display.ColorDisplayManager
+import android.util.Log
 
 import vendor.semc.hardware.display.V2_0.IDisplay
-import vendor.semc.hardware.display.V2_0.IDisplayCallback
-import vendor.semc.hardware.display.V2_0.PccMatrix
 
-class XRealityModeUtils(private val context: Context) : IDisplayCallback.Stub() {
+/**
+ * X-Reality Pro — tyty path (Evolution 10/8 XperiaDisplay):
+ *   enabled:  sspp=2, ColorDisplayManager BOOSTED(1), set_color_mode(1)
+ *   disabled: sspp=1, ColorDisplayManager AUTOMATIC(3), set_color_mode(1)
+ *
+ * XR must not register the SEMC display callback. Creator owns the PCC callback path.
+ */
+class XRealityModeUtils(private val context: Context) {
+    private var initialized = false
+
     private val colorDisplayManager: ColorDisplayManager =
             context.getSystemService(ColorDisplayManager::class.java)
                     ?: throw Exception("Display manager is NULL")
     private val semcDisplayService: IDisplay by lazy {
         val service = IDisplay.getService() ?: throw Exception("SEMC Display HIDL not found")
-
-        service.registerCallback(this)
-
         service.setup()
         service
     }
 
     val isEnabled: Boolean
-        get() = Settings.Secure.getInt(context.contentResolver, XREALITY_MODE_ENABLE, 0) != 0
+        get() = isEnabledInSettings(context)
 
-    fun setMode(enabled: Boolean) {
-        semcDisplayService.set_sspp_color_mode(if (enabled) 2 else 1)
-        colorDisplayManager.setColorMode(if (enabled) 1 else 3)
-        semcDisplayService.set_color_mode(if (enabled) 2 else 1)
+    fun setMode(enabled: Boolean): Boolean {
+        return try {
+            semcDisplayService.set_sspp_color_mode(
+                if (enabled) SSPP_MODE_EXTENSION_A else SSPP_MODE_STANDARD
+            )
+            colorDisplayManager.setColorMode(
+                if (enabled) COLOR_MODE_BOOSTED else COLOR_MODE_AUTOMATIC
+            )
+            semcDisplayService.set_color_mode(CGAMUT_MODE_STANDARD)
 
-        Settings.Secure.putInt(context.contentResolver, XREALITY_MODE_ENABLE, if (enabled) 1 else 0)
+            DisplayModeSettings.setXRealityEnabled(context, enabled)
+            Log.i(TAG, "X-Reality Mode enabled=$enabled")
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to set X-Reality Mode enabled=$enabled", e)
+            false
+        }
+    }
+
+    fun ensureInitialized() {
+        synchronized(this) {
+            if (initialized) return
+            initialized = true
+        }
+        initialize()
     }
 
     fun initialize() {
-        Log.e(TAG, "XReality Mode controller setup")
-
-        if (isEnabled) {
-            setMode(true)
-        }
-    }
-
-    override fun onWhiteBalanceMatrixChanged(matrix: PccMatrix) {
-        val r = matrix.red
-        val g = matrix.green
-        val b = matrix.blue
-        val saturationAdjustment = 2f
-        val brightnessAdjustment = 0.1f
-
-        val adjustedRed = (saturationAdjustment * r).coerceIn(0f, 1f)
-        val adjustedGreen = (saturationAdjustment * g).coerceIn(0f, 1f)
-        val adjustedBlue = (saturationAdjustment * b).coerceIn(0f, 1f)
-        
-    try {
-        val saturationAdjustment = 1.5f
-        val brightnessAdjustment = 0.9f
-
-        val adjustedRed = (saturationAdjustment * r).coerceIn(0f, 1f)
-        val adjustedGreen = (saturationAdjustment * g).coerceIn(0f, 1f)
-        val adjustedBlue = (saturationAdjustment * b).coerceIn(0f, 1f)
-
-        val colorMatrix: ColorMatrix = ColorMatrix().apply {
-            set(floatArrayOf(
-                adjustedRed, 0f, 0f, 0f, brightnessAdjustment * 255, // Red
-                0f, adjustedGreen, 0f, 0f, brightnessAdjustment * 255, // Green
-                0f, 0f, adjustedBlue, 0f, brightnessAdjustment * 255, // Blue
-                0f, 0f, 0f, 1f, 0f // Alpha
-            ))
-        }
-
-            updateConfiguration()
-        } catch (e: Exception) {
-            Log.e(TAG, "Could not apply setColorMatrix", e)
-        }
-    }
-
-    fun updateConfiguration() {
+        Log.i(TAG, "XReality Mode controller setup")
         try {
-            ActivityTaskManager.getService().updateConfiguration(null)
-        } catch (e: RemoteException) {
-            Log.e(TAG, "Could not update configuration", e)
+            if (isEnabled) {
+                setMode(true)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to initialize X-Reality Mode", e)
         }
     }
 
     companion object {
         private const val TAG = "XRealityUtils"
-        private const val XREALITY_MODE_ENABLE = "xr_enable"
+        const val XREALITY_MODE_ENABLE = "xr_enable"
+        const val SWITCH_XREALITY_MODE = "switchXRealityMode"
+
+        private const val CGAMUT_MODE_STANDARD = 1
+        private const val SSPP_MODE_STANDARD = 1
+        private const val SSPP_MODE_EXTENSION_A = 2
+        private const val COLOR_MODE_BOOSTED = 1
+        private const val COLOR_MODE_AUTOMATIC = 3
+
+        fun isEnabledInSettings(context: Context): Boolean {
+            return DisplayModeSettings.isXRealityEnabled(context)
+        }
+
+        fun resetInitialization() {
+            // No singleton; DisplayModeInitializer creates a fresh instance after APK update.
+        }
     }
 }

@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2023 XperiaLabs Project
+  ~ Copyright (C) 2024 XperiaLabs Project
   ~
   ~ SPDX-License-Identifier: Apache-2.0
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:clipChildren="true"
+    android:clipToPadding="true"
     android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/viewpager_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:clipChildren="true"
         android:clipToPadding="true">
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/creator_mode_preview_height"
-            android:background="?android:attr/colorBackground" />
+            android:layout_height="match_parent"
+            android:background="?android:attr/colorBackground"
+            android:clipChildren="true"
+            android:clipToPadding="true" />
     </FrameLayout>
 
     <FrameLayout
