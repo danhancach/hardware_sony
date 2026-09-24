@@ -15,3 +15,7 @@ allow vendor_init vendor_sysfs_battery_supply:file create;
 set_prop(vendor_init, vendor_camera_sensor_prop)
 set_prop(vendor_init, vendor_display_color_prop)
 set_prop(vendor_init, vendor_sdm_prop)
+
+# Sony/QTI boot scripts access these platform properties.
+get_prop(vendor_init, bluetooth_prop)
+get_prop(vendor_init, powerctl_prop)

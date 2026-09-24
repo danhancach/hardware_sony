@@ -1,0 +1,2 @@
+allow toolbox adb_data_file:dir { getattr open read remove_name rmdir search write };
+allow toolbox adb_data_file:file { getattr unlink };

@@ -1,6 +1,16 @@
 allow platform_app hal_miscta_service:service_manager find;
+allow platform_app hal_swiqi_service:service_manager find;
+allow platform_app_36 hal_swiqi_service:service_manager find;
+
+# SwiqiSystemService registers VPP whitelist via vppservice binder (stock odm rule).
+binder_call(platform_app, vendor_vppservice);
+binder_call(platform_app_36, vendor_vppservice);
 
 allow platform_app vendor_hal_idd_hwservice:hwservice_manager find;
+allow platform_app_36 vendor_hal_idd_hwservice:hwservice_manager find;
+
+binder_call(platform_app, vendor_hal_idd_default);
+binder_call(platform_app_36, vendor_hal_idd_default);
 
 allow platform_app vendor_hal_somc_charger_hwservice:hwservice_manager find;
 
@@ -10,8 +20,17 @@ allow platform_app vendor_sysfs_graphics:file { read open getattr };
 
 
 allow priv_app hal_miscta_service:service_manager find;
+allow priv_app hal_swiqi_service:service_manager find;
+allow priv_app_36 hal_swiqi_service:service_manager find;
+
+binder_call(priv_app, vendor_vppservice);
+binder_call(priv_app_36, vendor_vppservice);
 
 allow priv_app vendor_hal_idd_hwservice:hwservice_manager find;
+allow priv_app_36 vendor_hal_idd_hwservice:hwservice_manager find;
+
+binder_call(priv_app, vendor_hal_idd_default);
+binder_call(priv_app_36, vendor_hal_idd_default);
 
 allow priv_app vendor_hal_somc_charger_hwservice:hwservice_manager find;
 

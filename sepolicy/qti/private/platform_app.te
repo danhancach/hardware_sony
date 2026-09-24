@@ -1,0 +1,4 @@
+# SwiqiSystemService (platform-signed, targetSdk 33) runs as platform_app_36 on Android 17.
+# Vendor-only rules on platform_app_36_202604 do not always apply at runtime; allow here too.
+allow platform_app_36 hal_swiqi_service:service_manager find;
+allow priv_app_36 hal_swiqi_service:service_manager find;
