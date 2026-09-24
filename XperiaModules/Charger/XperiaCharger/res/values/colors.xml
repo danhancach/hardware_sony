@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Xanh accent (#4E9B45) — chi dung cho text/tieu de -->
+    <color name="battery_monitor_accent">#FF4E9B45</color>
+    <!-- Card / popup: dong bo settingslib_preference_bg (SurfaceBright) -->
+    <color name="battery_monitor_card_surface">@color/settingslib_materialColorSurfaceBright</color>
+    <color name="battery_monitor_popup_surface">@color/settingslib_materialColorSurfaceContainerHigh</color>
+</resources>

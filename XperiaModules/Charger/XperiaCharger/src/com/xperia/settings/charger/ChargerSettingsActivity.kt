@@ -8,9 +8,9 @@ package com.xperia.settings.charger
 
 import android.os.Bundle
 
-import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
+import com.xperia.settings.ui.XperiaCollapsingToolbarBaseActivity
 
-class ChargerSettingsActivity : CollapsingToolbarBaseActivity() {
+class ChargerSettingsActivity : XperiaCollapsingToolbarBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,36 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--
+  Copyright (C) 2025 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/charger_settings_title">
-
-    <com.android.settingslib.widget.LayoutPreference
-        android:key="battery_care_preview"
-        android:layout="@layout/battery_care_view"
-        android:selectable="false" />
 
     <com.android.settingslib.widget.MainSwitchPreference
         android:defaultValue="false"
         android:key="device_charging_main_enable"
         android:title="@string/charger_bc_enable" />
 
-    <SwitchPreferenceCompat
-        android:key="device_charging_enable"
-        android:title="@string/charger_hs_enable"
-        android:summary="@string/charger_hs_summary"
-        android:persistent="false"
-        android:dependency="device_charging_main_enable" />
-
-    <com.xperia.settings.charger.widgets.CustomSeekBarPreference
-        android:key="device_charging_control"
-        android:title="@string/charger_bc_limit"
-        android:defaultValue="@integer/charging_control_default"
-        android:max="@integer/charging_control_max"
-        android:min="@integer/charging_control_min"
+    <com.android.settingslib.widget.UntitledPreferenceCategory
+        android:key="charger_options_category"
         android:dependency="device_charging_main_enable"
-        app:showSeekBarValue="true"
-        app:defaultValueText="@string/charing_control_default_value" />
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:key="device_charging_mode"
+            android:title="@string/charger_mode_title"
+            android:summary="%s"
+            android:entries="@array/charger_mode_entries"
+            android:entryValues="@array/charger_mode_values"
+            android:defaultValue="3"
+            android:dependency="device_charging_main_enable" />
+
+        <com.xperia.settings.charger.widgets.ChargingLimitPreference
+            android:key="device_charging_control"
+            android:title="@string/charger_bc_limit"
+            android:dependency="device_charging_main_enable"
+            android:min="@integer/charging_control_min"
+            android:max="@integer/charging_control_max"
+            android:defaultValue="@integer/charging_control_default" />
+
+        <com.xperia.settings.charger.widgets.TimeOfDayPreference
+            android:key="device_charging_start_time"
+            android:title="@string/charger_start_time_title"
+            android:dependency="device_charging_main_enable" />
+
+        <com.xperia.settings.charger.widgets.TimeOfDayPreference
+            android:key="device_charging_target_time"
+            android:title="@string/charger_target_time_title"
+            android:dependency="device_charging_main_enable" />
+
+    </com.android.settingslib.widget.UntitledPreferenceCategory>
+
+    <com.android.settingslib.widget.UntitledPreferenceCategory
+        android:key="charger_hspc_category"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+            android:key="device_charging_enable"
+            android:title="@string/charger_hs_enable"
+            android:summary="@string/charger_hs_summary"
+            android:persistent="false" />
+
+    </com.android.settingslib.widget.UntitledPreferenceCategory>
 
     <com.android.settingslib.widget.FooterPreference
         android:key="charger_settings_footer"

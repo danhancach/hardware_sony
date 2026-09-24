@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2024 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string name="app_name">Xperia Charger</string>
+
+    <string name="charger_settings_title">Quản lý sạc pin</string>
+    <string name="charger_settings_summary">Giới hạn sạc và giảm nhiệt khi cắm sạc để kéo dài tuổi thọ pin</string>
+    <string name="charger_bc_enable">Dùng quản lý sạc pin</string>
+    <string name="charger_hs_enable">H.S. Power Control</string>
+    <string name="charger_hs_summary">Khi bật, máy chạy từ nguồn sạc thay vì sạc pin. Giảm nhiệt khi chơi game.</string>
+    <string name="charger_bc_limit">Giới hạn sạc</string>
+    <string name="charger_limit_value_format">%d%%</string>
+
+    <string name="charger_mode_title">Chế độ sạc</string>
+    <string name="charger_mode_auto">Lịch tự động</string>
+    <string name="charger_mode_manual">Lịch tùy chỉnh</string>
+    <string name="charger_mode_limit">Giới hạn phần trăm</string>
+    <string name="charger_schedule_category">Lịch</string>
+    <string name="charger_start_time_title">Giờ bắt đầu</string>
+    <string name="charger_start_time_summary">Bắt đầu kiểm soát sau %s</string>
+    <string name="charger_target_time_title">Giờ đầy pin</string>
+    <string name="charger_target_time_summary">Pin nên đầy trước %s</string>
+    <string name="charger_dlg_ok">OK</string>
+    <string name="charger_dlg_cancel">Hủy</string>
+
+    <string name="charger_settings_footer">Chế độ giới hạn dừng sạc ở mức đã đặt.\nChế độ lịch tạm ngắt sạc ngoài khung giờ và sạc lại để đầy gần giờ mục tiêu.\nH.S. Power Control luôn ưu tiên hơn quản lý sạc pin khi đang bật.\nThêm ô H.S. Power Control từ Cài đặt nhanh để bật/tắt nhanh.</string>
+
+    <string name="charger_hs_tile">H.S. Power Control</string>
+    <string name="charger_hs_tile_on">Bật — không sạc pin</string>
+    <string name="charger_hs_tile_off">Tắt — cho phép sạc</string>
+
+    <!-- Giám sát pin -->
+    <string name="battery_monitor_title">Giám sát pin</string>
+    <string name="battery_monitor_enable">Dùng giám sát pin</string>
+    <string name="battery_monitor_summary">Thông số pin realtime và thống kê từ lúc đặt lại</string>
+    <string name="battery_monitor_reset">Đặt lại</string>
+    <string name="battery_monitor_enable_notification">Bật hiển thị pin lên thanh thông báo</string>
+    <string name="battery_monitor_disable_notification">Tắt hiển thị pin lên thanh thông báo</string>
+    <string name="battery_monitor_notification_channel">Giám sát pin</string>
+    <string name="battery_monitor_notification_channel_desc">Mức pin và tốc độ hao pin realtime</string>
+    <string name="battery_monitor_notification_title">Pin  %1$d%% | %2$d°C</string>
+    <string name="battery_monitor_notification_text">%1$s%%/h | %2$s%%/h</string>
+    <string name="battery_monitor_stats_title">Thống kê khi dùng pin</string>
+    <string name="battery_monitor_range_since_start">Từ lúc bắt đầu</string>
+    <string name="battery_monitor_range_since_full">Từ lần sạc đầy</string>
+    <string name="battery_monitor_range_since_now">Kể từ bây giờ</string>
+    <string name="battery_monitor_level_format">%d%%</string>
+    <string name="battery_monitor_temp_format">Nhiệt độ: %d°C</string>
+    <string name="battery_monitor_current_format">Dòng điện: %+d mA</string>
+    <string name="battery_monitor_power_format">Nguồn: %s W</string>
+    <string name="battery_monitor_status_charging_ac">Đang sạc AC</string>
+    <string name="battery_monitor_status_charging_usb">Đang sạc USB</string>
+    <string name="battery_monitor_status_charging_wireless">Đang sạc không dây</string>
+    <string name="battery_monitor_status_charging_dock">Đang sạc dock</string>
+    <string name="battery_monitor_status_charging">Đang sạc</string>
+    <string name="battery_monitor_status_discharging">Đang xả</string>
+    <string name="battery_monitor_status_not_charging">Không sạc</string>
+    <string name="battery_monitor_status_full">Đầy</string>
+    <string name="battery_monitor_on_battery_time">Thời gian dùng pin: %s</string>
+    <string name="battery_monitor_screen_on">Màn hình bật</string>
+    <string name="battery_monitor_screen_off">Màn hình tắt</string>
+    <string name="battery_monitor_time_format">T.gian: %s</string>
+    <string name="battery_monitor_usage_format">Sử dụng: %d%%</string>
+    <string name="battery_monitor_active_drain">Hao pin khi hoạt động: %s%% mỗi giờ</string>
+    <string name="battery_monitor_idle_drain">Hao pin khi chờ: %s%% mỗi giờ</string>
+    <string name="battery_monitor_deep_sleep">Ngủ sâu: %s</string>
+    <string name="battery_monitor_held_awake">Giữ đánh thức: %1$s (%2$s%%)</string>
+    <string name="battery_monitor_charge_time">Thời gian sạc: %s</string>
+    <string name="battery_monitor_duration_hm">%1$dh %2$dm</string>
+    <string name="battery_monitor_duration_ms">%1$dm %2$ds</string>
+    <string name="battery_monitor_duration_s">%ds</string>
+</resources>

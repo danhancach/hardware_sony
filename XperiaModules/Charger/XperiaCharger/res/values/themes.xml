@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <style name="Theme.BatteryMonitor" parent="@style/Theme.SubSettingsBase.Expressive">
+        <item name="android:popupMenuStyle">@style/BatteryMonitorPopupMenu</item>
+        <item name="android:actionOverflowMenuStyle">@style/BatteryMonitorPopupMenuOverflow</item>
+        <item name="android:popupTheme">@style/BatteryMonitorPopupOverlay</item>
+        <!-- Nen trang = SurfaceContainer (Settings Expressive) -->
+        <item name="android:colorBackground">@color/settingslib_materialColorSurfaceContainer</item>
+        <item name="android:windowBackground">@color/settingslib_materialColorSurfaceContainer</item>
+    </style>
+
+    <style name="BatteryMonitorPopupOverlay" parent="@android:style/ThemeOverlay.Material.Light">
+        <item name="android:popupMenuStyle">@style/BatteryMonitorPopupMenu</item>
+        <item name="android:actionOverflowMenuStyle">@style/BatteryMonitorPopupMenuOverflow</item>
+        <item name="android:colorBackground">@color/battery_monitor_popup_surface</item>
+        <item name="android:textColorPrimary">@color/settingslib_materialColorOnSurface</item>
+        <item name="android:textColorSecondary">@color/settingslib_materialColorOnSurfaceVariant</item>
+    </style>
+
+    <style name="BatteryMonitorPopupMenu" parent="@android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/battery_monitor_menu_popup_bg</item>
+    </style>
+
+    <style name="BatteryMonitorPopupMenuOverflow"
+        parent="@android:style/Widget.Material.PopupMenu.Overflow">
+        <item name="android:popupBackground">@drawable/battery_monitor_menu_popup_bg</item>
+    </style>
+</resources>

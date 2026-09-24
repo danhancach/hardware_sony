@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?attr/colorControlNormal">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M15,4H9V2h6V4zM16.67,4H15v2H9V4H7.33C6.6,4 6,4.6 6,5.33v15.33C6,21.4 6.6,22 7.33,22h9.33C17.4,22 18,21.4 18,20.67V5.33C18,4.6 17.4,4 16.67,4zM8,17v-2h2v2H8zM11,17v-4h2v4H11zM14,17v-6h2v6H14z" />
+</vector>

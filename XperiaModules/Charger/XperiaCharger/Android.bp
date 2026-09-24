@@ -13,6 +13,8 @@ android_app {
     privileged: true,
 
     static_libs: [
+        "XperiaSettingsBase",
+        "androidx.appcompat_appcompat",
         "androidx.core_core",
         "androidx.preference_preference",
         "androidx.core_core-ktx",
