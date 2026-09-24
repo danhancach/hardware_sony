@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 XperiaLabs Project
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<resources>
+    <string name="app_name">Xperia Display</string>
+
+    <string name="display_settings_title">Cài đặt chất lượng hình ảnh</string>
+    <string name="display_setting_summary">Điều chỉnh chất lượng hình ảnh với Creator Mode</string>
+    <string name="display_cm_header">Dải màu và độ tương phản</string>
+    <string name="display_cm_enable">Creator Mode</string>
+    <string name="display_cm_summary">Tái hiện chân thực tầm nhìn của người sáng tạo qua hiển thị độ nét cao và xử lý hình ảnh tương thích dải màu BT.2020 và màu 10-bit theo chuẩn HDR.</string>
+    <string name="display_xrp_enable">X-Reality Pro for Mobile</string>
+    <string name="display_xrp_summary">Chế độ hiển thị theo phong cách Bravia Engine, tối ưu độ tương phản và màu sắc để nâng cao trải nghiệm xem.</string>
+    <string name="display_settings_footer">Ứng dụng hỗ trợ dải màu rộng sẽ tự hiển thị theo màu gốc.\n\n\nVideo HDR ở chế độ toàn màn hình sẽ tự động hiển thị với Creator Mode.</string>
+</resources>

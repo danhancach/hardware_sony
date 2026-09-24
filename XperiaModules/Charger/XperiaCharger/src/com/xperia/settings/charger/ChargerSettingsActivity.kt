@@ -8,24 +8,19 @@ package com.xperia.settings.charger
 
 import android.os.Bundle
 
-import androidx.appcompat.app.AppCompatActivity
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
-import com.xperia.settings.charger.R
 
 class ChargerSettingsActivity : CollapsingToolbarBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.battery_care_preview)
+        title = getString(R.string.charger_settings_title)
 
-        if (savedInstanceState == null) {
+        val contentFrame = com.android.settingslib.collapsingtoolbar.R.id.content_frame
+        if (supportFragmentManager.findFragmentById(contentFrame) == null) {
             supportFragmentManager.beginTransaction()
-                .replace(com.android.settingslib.collapsingtoolbar.R.id.content_frame, ChargerSettingsFragment())
+                .replace(contentFrame, ChargerSettingsFragment())
                 .commit()
         }
-    }
-
-    companion object {
-        private const val TAG = "ChargerSettingsActivity"
     }
 }

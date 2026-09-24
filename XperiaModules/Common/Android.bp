@@ -1,0 +1,48 @@
+//
+// Copyright (C) 2026 XperiaLabs Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+android_library {
+    name: "XperiaMiuixHeader",
+    manifest: "AndroidManifest.xml",
+
+    srcs: [
+        "src/com/xperia/settings/ui/XperiaMiuixTitleMotion.kt",
+        "src/com/xperia/settings/ui/XperiaAppBarScrollBehavior.kt",
+        "src/com/xperia/settings/ui/XperiaMiuixHeaderController.kt",
+    ],
+
+    platform_apis: true,
+    static_libs: [
+        "androidx.annotation_annotation",
+        "androidx.appcompat_appcompat",
+        "androidx.coordinatorlayout_coordinatorlayout",
+        "androidx.core_core",
+        "com.google.android.material_material",
+    ],
+
+    kotlincflags: [
+        "-Xjvm-default=all",
+    ],
+}
+
+android_library {
+    name: "XperiaSettingsBase",
+    defaults: ["SettingsLibDefaults"],
+    manifest: "SettingsBaseManifest.xml",
+
+    srcs: [
+        "src/com/xperia/settings/ui/XperiaCollapsingToolbarBaseActivity.kt",
+    ],
+
+    platform_apis: true,
+    static_libs: [
+        "XperiaMiuixHeader",
+    ],
+
+    kotlincflags: [
+        "-Xjvm-default=all",
+    ],
+}
