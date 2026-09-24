@@ -2,3 +2,9 @@ macaddrsetup/
 simdetect/
 timekeep/
 SonyOpenTelephony/
+
+# Artifact IDE/tool cu (da go GitNexus)
+.gitnexus/
+.claude/
+AGENTS.md
+CLAUDE.md
