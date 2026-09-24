@@ -1,3 +1,4 @@
+persist.vendor.bt.                             u:object_r:vendor_bluetooth_prop:s0
 persist.vendor.disable_high_resolution         u:object_r:vendor_hal_superstamina_prop:s0
 persist.vendor.display.colorgamut.mode         u:object_r:vendor_display_color_prop:s0
 persist.vendor.display.libhdr.enable_dyn_tm    u:object_r:vendor_display_color_prop:s0
