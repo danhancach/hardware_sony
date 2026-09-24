@@ -1,0 +1,33 @@
+android_app {
+    name: "XperiaCpu",
+    defaults: ["SettingsLibDefaults"],
+
+    srcs: [
+        "src/**/*.kt",
+    ],
+    resource_dirs: ["res"],
+
+    certificate: "platform",
+    platform_apis: true,
+    system_ext_specific: true,
+    privileged: true,
+
+    static_libs: [
+        "androidx.appcompat_appcompat",
+        "androidx.core_core",
+        "androidx.preference_preference",
+        "androidx.core_core-ktx",
+    ],
+
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
+}
+
+prebuilt_etc {
+    name: "init.xperia_cpu.rc",
+    src: "init.xperia_cpu.rc",
+    filename_from_src: true,
+    sub_dir: "init",
+    system_ext_specific: true,
+}

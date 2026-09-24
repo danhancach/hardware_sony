@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/cpu_settings_title">
+
+    <com.android.settingslib.widget.UntitledPreferenceCategory
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:key="xperia_cpu_idle_mode"
+            android:title="@string/cpu_idle_limit_title"
+            android:summary="%s"
+            android:entries="@array/cpu_idle_limit_entries"
+            android:entryValues="@array/cpu_idle_limit_values"
+            android:defaultValue="off"
+            android:persistent="false"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="xperia_cpu_active_limit"
+            android:title="@string/cpu_active_limit_title"
+            android:summary="%s"
+            android:entries="@array/cpu_active_limit_entries"
+            android:entryValues="@array/cpu_active_limit_values"
+            android:defaultValue="100"
+            android:persistent="false"
+            app:iconSpaceReserved="false" />
+
+    </com.android.settingslib.widget.UntitledPreferenceCategory>
+
+    <com.android.settingslib.widget.FooterPreference
+        android:key="cpu_settings_footer"
+        android:title="@string/cpu_settings_footer"
+        android:selectable="false" />
+
+</PreferenceScreen>

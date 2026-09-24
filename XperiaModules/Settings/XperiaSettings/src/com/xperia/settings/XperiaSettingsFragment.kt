@@ -7,13 +7,13 @@
 package com.xperia.settings
 
 import android.os.Bundle
-import androidx.preference.*
-import android.content.pm.PackageManager
+
+import com.android.settingslib.widget.SettingsBasePreferenceFragment
 
 import com.xperia.settings.R
 import com.xperia.settings.XperiaSettingsPackage
 
-class XperiaSettingsFragment : PreferenceFragmentCompat() {
+class XperiaSettingsFragment : SettingsBasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.xperia_settings, rootKey)
 
@@ -21,9 +21,15 @@ class XperiaSettingsFragment : PreferenceFragmentCompat() {
         xperiaSettingsPackage.setupDisplaySettings()
         xperiaSettingsPackage.setupAudioSettings()
         xperiaSettingsPackage.setupBatterySettings()
+        xperiaSettingsPackage.setupCpuSettings()
         xperiaSettingsPackage.setupExtMonSettings()
         xperiaSettingsPackage.setupUSBASettings()
         xperiaSettingsPackage.setupDSMSettings()
         xperiaSettingsPackage.setupACCUISettings()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.title = getString(R.string.app_name)
     }
 }

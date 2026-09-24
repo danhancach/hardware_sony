@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string name="app_name">Xperia CPU</string>
+    <string name="cpu_settings_title">CPU</string>
+    <string name="cpu_settings_summary">Customize CPU configuration</string>
+
+    <string name="cpu_idle_limit_title">When screen is off</string>
+    <string name="cpu_active_limit_title">When screen is on</string>
+
+    <string name="cpu_settings_footer">Lower limits can keep the phone cooler and save battery, but may feel a bit slower.</string>
+
+    <string-array name="cpu_idle_limit_entries">
+        <item>No limit</item>
+        <item>Maximum power saving</item>
+        <item>Limit to 35%</item>
+        <item>Limit to 50%</item>
+    </string-array>
+    <string-array name="cpu_idle_limit_values">
+        <item>off</item>
+        <item>powersave</item>
+        <item>35</item>
+        <item>50</item>
+    </string-array>
+
+    <string-array name="cpu_active_limit_entries">
+        <item>No limit (default)</item>
+        <item>Limit to 90%</item>
+        <item>Limit to 80%</item>
+        <item>Limit to 70%</item>
+    </string-array>
+    <string-array name="cpu_active_limit_values">
+        <item>100</item>
+        <item>90</item>
+        <item>80</item>
+        <item>70</item>
+    </string-array>
+</resources>
