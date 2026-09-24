@@ -1,0 +1,3 @@
+# XperiaCpu: ghi scaling_max / scaling_governor / online / core_ctl
+allow system_app sysfs_devices_system_cpu:file rw_file_perms;
+allow system_app sysfs_devices_system_cpu:dir r_dir_perms;

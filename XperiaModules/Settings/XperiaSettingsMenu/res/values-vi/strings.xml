@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 XperiaLabs Project
+  ~
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<resources>
+    <string name="app_name">Cài đặt Xperia</string>
+
+    <string name="display_title">Hiển thị</string>
+    <string name="display_settings_title">Cài đặt chất lượng hình ảnh</string>
+    <string name="display_settings_summary">Chọn giữ màu sắc rực rỡ hoặc tái hiện chân thực tầm nhìn của người sáng tạo để có trải nghiệm hình ảnh đáng nhớ</string>
+
+    <string name="sound_title">Âm thanh</string>
+    <string name="audio_settings_title">Cài đặt âm thanh</string>
+    <string name="audio_settings_summary">Nâng tầm chất lượng âm thanh với Dolby Sound EQ và 360 Reality Audio Upmix cho trải nghiệm nghe sống động, bao trùm</string>
+
+    <string name="charging_title">Pin</string>
+    <string name="charger_settings_title">Quản lý sạc pin</string>
+    <string name="charger_settings_summary">Tối ưu tuổi thọ pin bằng cách giới hạn mức sạc và tinh chỉnh các tùy chọn sạc khác</string>
+    <string name="battery_monitor_title">Giám sát pin</string>
+    <string name="battery_monitor_summary">Thông số pin realtime và thống kê từ lúc đặt lại</string>
+
+    <string name="cpu_title">CPU</string>
+    <string name="cpu_settings_title">CPU</string>
+    <string name="cpu_settings_summary">Tùy chỉnh cấu hình CPU</string>
+
+    <string name="usb_title">USB</string>
+    <string name="usb_em_title">Màn hình ngoài</string>
+    <string name="usb_em_summary">Bật ứng dụng Màn hình ngoài để tùy chỉnh camera ngoài và dùng màn hình Xperia làm khung ngắm chính xác, màu sắc trung thực</string>
+
+    <string name="usba_settings_title">Xuất âm thanh qua USB</string>
+    <string name="usba_settings_summary">Điều chỉnh âm lượng media, cuộc gọi hoặc micro khi xuất âm thanh ra thiết bị ngoài qua cổng USB</string>
+
+    <string name="gaming_title">Trò chơi</string>
+    <string name="dsm_settings_title">Tay cầm không dây PS5 và PS4</string>
+    <string name="dsm_settings_summary">Kết nối tay cầm PlayStation© với Xperia để dùng khi chơi game</string>
+
+    <string name="accui_settings_title">Xperia Stream</string>
+    <string name="accui_settings_summary">Xperia Stream cung cấp xuất hiển thị và streaming nâng cao cùng quạt tản nhiệt, giúp máy mát hơn và hiệu năng ổn định hơn</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string name="app_name">Xperia CPU</string>
+    <string name="cpu_settings_title">CPU</string>
+    <string name="cpu_settings_summary">Tùy chỉnh cấu hình CPU</string>
+
+    <string name="cpu_idle_limit_title">Khi tắt màn hình</string>
+    <string name="cpu_active_limit_title">Khi bật màn hình</string>
+
+    <string name="cpu_settings_footer">Giới hạn thấp hơn giúp máy mát và tiết kiệm pin hơn, nhưng có thể chậm hơn một chút.</string>
+
+    <string-array name="cpu_idle_limit_entries">
+        <item>Không giới hạn</item>
+        <item>Tiết kiệm tối đa</item>
+        <item>Giới hạn 35%</item>
+        <item>Giới hạn 50%</item>
+    </string-array>
+
+    <string-array name="cpu_active_limit_entries">
+        <item>Không giới hạn (mặc định)</item>
+        <item>Giới hạn 90%</item>
+        <item>Giới hạn 80%</item>
+        <item>Giới hạn 70%</item>
+    </string-array>
+</resources>

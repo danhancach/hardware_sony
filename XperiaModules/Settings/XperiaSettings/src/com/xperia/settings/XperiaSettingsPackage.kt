@@ -20,8 +20,10 @@ class XperiaSettingsPackage(private val fragment: PreferenceFragmentCompat) {
     private val displayClassName = "com.xperia.settings.display.DisplaySettingsActivity"
     private val audioPackageName = "com.sonyericsson.soundenhancement"
     private val audioClassName = "com.sonyericsson.soundenhancement.AudioEffectMenuActivity"
-    private val batteryPackageName = "org.lineageos.lineageparts"
-    private val batteryClassName = "org.lineageos.lineageparts.health.ChargingControlSettings"
+    private val batteryPackageName = "com.xperia.settings.charger"
+    private val batteryClassName = "com.xperia.settings.charger.ChargerSettingsActivity"
+    private val cpuPackageName = "com.xperia.settings.cpu"
+    private val cpuClassName = "com.xperia.settings.cpu.CpuSettingsActivity"
     private val extmonPackageName = "com.sonymobile.extmonitorapp"
     private val extmonClassName = "com.sonymobile.extmonitorapp.settings.SettingsAppLauncherActivity"
     private val usbaPackageName = "jp.co.sony.mc.usbextoutaudio"
@@ -93,6 +95,25 @@ class XperiaSettingsPackage(private val fragment: PreferenceFragmentCompat) {
             category?.isVisible = false
         }
     }
+
+    fun setupCpuSettings() {
+        try {
+            val packageInfo = pm?.getPackageInfo(cpuPackageName, PackageManager.GET_ACTIVITIES)
+            if (packageInfo != null && PackageInfoCompat.getLongVersionCode(packageInfo) >= 1) {
+                fragment.findPreference<Preference>("cpu_settings")?.isVisible = true
+                fragment.findPreference<Preference>("cpu_settings")?.intent = Intent().apply {
+                    setClassName(cpuPackageName, cpuClassName)
+                }
+            } else {
+                fragment.findPreference<Preference>("cpu_settings")?.isVisible = false
+                fragment.findPreference<PreferenceCategory>("cpu")?.isVisible = false
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            fragment.findPreference<Preference>("cpu_settings")?.isVisible = false
+            fragment.findPreference<PreferenceCategory>("cpu")?.isVisible = false
+        }
+    }
+
     fun setupExtMonSettings() {
         try {
             val packageInfo = pm?.getPackageInfo(extmonPackageName, PackageManager.GET_ACTIVITIES)

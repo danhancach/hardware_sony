@@ -10,10 +10,12 @@
 
     <PreferenceCategory
         android:key="display"
+        app:iconSpaceReserved="false"
         android:title="@string/display_title">
 
         <Preference
             android:key="display_settings"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_display_settings"
             android:title="@string/display_settings_title"
             android:summary="@string/display_settings_summary">
@@ -27,10 +29,12 @@
 
     <PreferenceCategory
         android:key="sound"
+        app:iconSpaceReserved="false"
         android:title="@string/sound_title">
 
         <Preference
             android:key="audio_settings"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_audio_settings"
             android:title="@string/audio_settings_title"
             android:summary="@string/audio_settings_summary">
@@ -44,10 +48,12 @@
 
     <PreferenceCategory
         android:key="charger"
+        app:iconSpaceReserved="false"
         android:title="@string/charging_title">
 
         <Preference
             android:key="charging_settings"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_battery_care"
             android:title="@string/charger_settings_title"
             android:summary="@string/charger_settings_summary">
@@ -57,25 +63,61 @@
                 android:targetClass="org.lineageos.lineageparts.health.ChargingControlSettings" />
         </Preference>
 
+        <Preference
+            android:key="battery_monitor_settings"
+            app:iconSpaceReserved="false"
+            android:icon="@drawable/ic_battery_monitor"
+            android:title="@string/battery_monitor_title"
+            android:summary="@string/battery_monitor_summary"
+            android:persistent="false">
+            <intent
+                android:action="android.intent.action.MAIN"
+                android:targetPackage="com.xperia.settings.charger"
+                android:targetClass="com.xperia.settings.charger.BatteryMonitorActivity" />
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="cpu"
+        app:iconSpaceReserved="false"
+        android:title="@string/cpu_title">
+
+        <Preference
+            android:key="cpu_settings"
+            app:iconSpaceReserved="false"
+            android:icon="@drawable/ic_cpu_settings"
+            android:title="@string/cpu_settings_title"
+            android:summary="@string/cpu_settings_summary"
+            android:persistent="false">
+            <intent
+                android:action="android.intent.action.MAIN"
+                android:targetPackage="com.xperia.settings.cpu"
+                android:targetClass="com.xperia.settings.cpu.CpuSettingsActivity" />
+        </Preference>
+
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="usb"
+        app:iconSpaceReserved="false"
         android:title="@string/usb_title">
 
-       <Preference
+        <Preference
             android:key="usb_extmon_settings"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_external_monitor"
             android:title="@string/usb_em_title"
             android:summary="@string/usb_em_summary"
             android:persistent="false">
             <intent
-                 android:targetPackage="com.sonymobile.extmonitorapp"
-                 android:targetClass="com.sonymobile.extmonitorapp.settings.SettingsAppLauncherActivity" />
+                android:targetPackage="com.sonymobile.extmonitorapp"
+                android:targetClass="com.sonymobile.extmonitorapp.settings.SettingsAppLauncherActivity" />
         </Preference>
 
         <Preference
             android:key="usb_audio_settings"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_usb_audio"
             android:title="@string/usba_settings_title"
             android:summary="@string/usba_settings_summary"
@@ -89,21 +131,24 @@
 
     <PreferenceCategory
         android:key="gaming"
+        app:iconSpaceReserved="false"
         android:title="@string/gaming_title">
 
-       <Preference
+        <Preference
             android:key="dsm_settings"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_dualshock_manager"
             android:title="@string/dsm_settings_title"
             android:summary="@string/dsm_settings_summary"
             android:persistent="false">
             <intent
-                 android:targetPackage="com.sonymobile.dualshockmanager"
-                 android:targetClass="com.sonymobile.dualshockmanager.Ds4SetUpActivity" />
+                android:targetPackage="com.sonymobile.dualshockmanager"
+                android:targetClass="com.sonymobile.dualshockmanager.Ds4SetUpActivity" />
         </Preference>
 
-       <Preference
+        <Preference
             android:key="accui_settings"
+            app:iconSpaceReserved="false"
             android:icon="@drawable/ic_accui_manager"
             android:title="@string/accui_settings_title"
             android:summary="@string/accui_settings_summary"
