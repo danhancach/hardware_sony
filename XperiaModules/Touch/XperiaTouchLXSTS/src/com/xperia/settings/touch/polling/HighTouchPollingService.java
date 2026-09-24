@@ -4,6 +4,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+
 package com.xperia.settings.touch.polling;
 
 import android.app.Service;
@@ -16,49 +17,63 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.UserHandle;
-import android.provider.Settings;
 import android.util.Log;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import lineageos.providers.LineageSettings;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * Dong bo frame_rate_np theo LineageSettings + man hinh / pin tiet kiem.
+ * Settings/IMM cung ghi cung key qua LineageHardware HAL; service nay
+ * them dieu kien screen-off va battery saver.
+ */
 public class HighTouchPollingService extends Service {
 
     private static final String TAG = "HighTouchPollingService";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
-    private static final String SETTING_KEY = "touch_polling_enabled";
-    private static final String TS_NODE = "/sys/devices/virtual/input/lxs_ts_input/frame_rate_np";
+    // Trung key Settings Display (LineageSettings, khong phai Settings.System)
+    private static final String SETTING_KEY =
+            LineageSettings.System.HIGH_TOUCH_POLLING_RATE_ENABLE;
+    private static final String TS_NODE =
+            "/sys/devices/virtual/input/lxs_ts_input/frame_rate_np";
+    private static final String RATE_HIGH = "0 3";
+    private static final String RATE_NORMAL = "0 2";
 
     private boolean mEnabled;
     private boolean mScreenOn = true;
+    private boolean mPowerSave;
     private PowerManager mPowerManager;
-    private boolean isPowerSaveCached = false; // Cache power save state
-    private BufferedWriter touchNodeWriter = null; // Pre-open the file writer
 
     private final ContentObserver mSettingObserver = new ContentObserver(new Handler()) {
         @Override
         public void onChange(boolean selfChange) {
-            updateTouchPollingState(true); // Update the state
+            updateTouchPollingState(true);
         }
     };
 
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
+            final String action = intent.getAction();
+            if (action == null) {
+                return;
+            }
+            switch (action) {
                 case Intent.ACTION_SCREEN_ON:
                     mScreenOn = true;
-                    updateTouchPollingState(false); // Update when screen turns on
+                    updateTouchPollingState(false);
                     break;
                 case Intent.ACTION_SCREEN_OFF:
                     mScreenOn = false;
-                    updateTouchPollingState(false); // Update when screen turns off
+                    updateTouchPollingState(false);
                     break;
                 case PowerManager.ACTION_POWER_SAVE_MODE_CHANGED:
-                    isPowerSaveCached = mPowerManager.isPowerSaveMode();
-                    updateTouchPollingState(false); 
+                    mPowerSave = mPowerManager.isPowerSaveMode();
+                    updateTouchPollingState(false);
                     break;
             }
         }
@@ -67,23 +82,15 @@ public class HighTouchPollingService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mPowerManager = getSystemService(PowerManager.class); 
-        getContentResolver().registerContentObserver(Settings.Secure.getUriFor(SETTING_KEY),
-                false, mSettingObserver);
+        mPowerManager = getSystemService(PowerManager.class);
+        getContentResolver().registerContentObserver(
+                LineageSettings.System.getUriFor(SETTING_KEY), false, mSettingObserver);
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED);
-        registerReceiver(mIntentReceiver, filter);
-
-        // Initialize power save state and open file writer
-        isPowerSaveCached = mPowerManager.isPowerSaveMode();
-        try {
-            touchNodeWriter = new BufferedWriter(new FileWriter(TS_NODE)); 
-        } catch (IOException e) {
-            Log.e(TAG, "Error opening touch node for writing", e);
-        }
-
-        updateTouchPollingState(true); // Initial update
+        registerReceiver(mIntentReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        mPowerSave = mPowerManager != null && mPowerManager.isPowerSaveMode();
+        updateTouchPollingState(true);
     }
 
     @Override
@@ -96,16 +103,6 @@ public class HighTouchPollingService extends Service {
     public void onDestroy() {
         getContentResolver().unregisterContentObserver(mSettingObserver);
         unregisterReceiver(mIntentReceiver);
-
-        // Close the file writer
-        if (touchNodeWriter != null) {
-            try {
-                touchNodeWriter.close();
-            } catch (IOException e) {
-               // Handle error
-            }
-        }
-
         super.onDestroy();
     }
 
@@ -121,22 +118,22 @@ public class HighTouchPollingService extends Service {
 
     private void updateTouchPollingState(boolean readSetting) {
         if (readSetting) {
-            mEnabled = Settings.Secure.getInt(getContentResolver(), SETTING_KEY, 0) == 1;
+            mEnabled = LineageSettings.System.getIntForUser(
+                    getContentResolver(), SETTING_KEY, 0, UserHandle.USER_CURRENT) == 1;
         }
 
-        if (touchNodeWriter != null) { // Ensure file writer is open
-            try {
-                // Dynamically determine value to write
-                String valueToWrite = mScreenOn && mEnabled && !isPowerSaveCached ? "0 3" : "0 2";
-                touchNodeWriter.write(valueToWrite);
-                touchNodeWriter.flush();
-            } catch (IOException e) {
-                Log.e(TAG, "Error writing to touch node", e);
-            }
+        final String value = mScreenOn && mEnabled && !mPowerSave ? RATE_HIGH : RATE_NORMAL;
+        try (FileOutputStream fos = new FileOutputStream(TS_NODE)) {
+            fos.write(value.getBytes(StandardCharsets.UTF_8));
+            fos.flush();
+        } catch (IOException e) {
+            Log.e(TAG, "Error writing to touch node", e);
         }
     }
-    
+
     private static void dlog(String msg) {
-        if (DEBUG) Log.d(TAG, msg);
+        if (DEBUG) {
+            Log.d(TAG, msg);
+        }
     }
 }
