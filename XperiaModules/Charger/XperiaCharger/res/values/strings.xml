@@ -1,37 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2024 XperiaLabs Project
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
+  Copyright (C) 2024 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
 <resources>
-    <!-- App Name -->
     <string name="app_name" translatable="true">Xperia Charger</string>
 
-    <!-- Battery Care -->
-    <string name="charger_settings_title">Battery Care</string>
-    <string name="charger_settings_summary">Optimize battery longevity by adjusting the maximum charging percentage and fine-tuning other charging settings</string>
-    <string name="charger_bc_enable">Use Battery Care</string>
+    <string name="charger_settings_title">Charging management</string>
+    <string name="charger_settings_summary">Limit charging and reduce heat while plugged in to help battery longevity</string>
+    <string name="charger_bc_enable">Use charging management</string>
     <string name="charger_hs_enable">H.S. Power Control</string>
-    <string name="charger_hs_summary">Turning H.S. Power Control off will power the phone systems directly rather than charging the battery.\nThis reduces thermal stress, helping to maintain gaming performance and keep your battery healthy for longer.</string>
-    <string name="charger_bc_limit">Charging Limit</string>
-    <string name="charing_control_default_value">Charge to 100%</string>
-    <string name="charger_settings_footer">If Battery Care is enabled, the device will start charging only when the following requirements have been met:\n 1. You have enabled charging by toggling \"H.S. Power Control\" on.\n 2. Your device\'s battery level is lower than the charging limit you\'ve set.\n\n\nCharging stops when a specified percentage is reached to increase the lifespan of the battery.\nSetting that limit to 80% yields even better results.</string>
+    <string name="charger_hs_summary">When on, power the phone from the charger instead of charging the battery. Reduces heat while gaming.</string>
+    <string name="charger_bc_limit">Charging limit</string>
+    <string name="charger_limit_value_format">%d%%</string>
 
-    <!-- H.S (Heat Suppression) Power Control QS Tile -->
+    <string name="charger_mode_title">Charging mode</string>
+    <string name="charger_mode_auto">Automatic schedule</string>
+    <string name="charger_mode_manual">Custom schedule</string>
+    <string name="charger_mode_limit">Limit charging</string>
+    <string name="charger_schedule_category">Schedule</string>
+    <string name="charger_start_time_title">Start time</string>
+    <string name="charger_start_time_summary">Control starts after %s</string>
+    <string name="charger_target_time_title">Target full time</string>
+    <string name="charger_target_time_summary">Battery should be full by %s</string>
+    <string name="charger_dlg_ok">OK</string>
+    <string name="charger_dlg_cancel">Cancel</string>
+
+    <string name="charger_settings_footer">Limit mode stops charging at the set percentage.\nSchedule modes pause charging outside the window and resume so the battery can reach full near the target time.\nH.S. Power Control always overrides charging management while enabled.\nAdd the H.S. Power Control tile from Quick Settings for a quick toggle.</string>
+
     <string name="charger_hs_tile">H.S. Power Control</string>
-    <string name="charger_hs_toast">Battery Care is turned off</string>
-    <string name="charger_hs_unplugged">Connect Charger to use H.S. Power Control</string>
-    <string name="charger_hs_reconnected">Charger Connected: Resuming H.S. Power Control</string>
+    <string name="charger_hs_tile_on">On — not charging battery</string>
+    <string name="charger_hs_tile_off">Off — charging allowed</string>
+
+    <!-- Battery monitor -->
+    <string name="battery_monitor_title">Battery monitor</string>
+    <string name="battery_monitor_enable">Use battery monitor</string>
+    <string name="battery_monitor_summary">Live battery stats and usage since reset</string>
+    <string name="battery_monitor_reset">Reset</string>
+    <string name="battery_monitor_enable_notification">Turn on battery notification</string>
+    <string name="battery_monitor_disable_notification">Turn off battery notification</string>
+    <string name="battery_monitor_notification_channel">Battery monitor</string>
+    <string name="battery_monitor_notification_channel_desc">Live battery level and drain rates</string>
+    <string name="battery_monitor_notification_title">Battery  %1$d%% | %2$d°C</string>
+    <string name="battery_monitor_notification_text">%1$s%%/h | %2$s%%/h</string>
+    <string name="battery_monitor_stats_title">Stats while on battery</string>
+    <string name="battery_monitor_range_since_start">Since start</string>
+    <string name="battery_monitor_range_since_full">Since last full charge</string>
+    <string name="battery_monitor_range_since_now">Since now</string>
+    <string name="battery_monitor_level_format">%d%%</string>
+    <string name="battery_monitor_temp_format">Temperature: %d°C</string>
+    <string name="battery_monitor_current_format">Current: %+d mA</string>
+    <string name="battery_monitor_power_format">Power: %s W</string>
+    <string name="battery_monitor_status_charging_ac">Charging (AC)</string>
+    <string name="battery_monitor_status_charging_usb">Charging (USB)</string>
+    <string name="battery_monitor_status_charging_wireless">Charging (wireless)</string>
+    <string name="battery_monitor_status_charging_dock">Charging (dock)</string>
+    <string name="battery_monitor_status_charging">Charging</string>
+    <string name="battery_monitor_status_discharging">Discharging</string>
+    <string name="battery_monitor_status_not_charging">Not charging</string>
+    <string name="battery_monitor_status_full">Full</string>
+    <string name="battery_monitor_on_battery_time">On battery: %s</string>
+    <string name="battery_monitor_screen_on">Screen on</string>
+    <string name="battery_monitor_screen_off">Screen off</string>
+    <string name="battery_monitor_time_format">Time: %s</string>
+    <string name="battery_monitor_usage_format">Usage: %d%%</string>
+    <string name="battery_monitor_active_drain">Active drain: %s%% per hour</string>
+    <string name="battery_monitor_idle_drain">Idle drain: %s%% per hour</string>
+    <string name="battery_monitor_deep_sleep">Deep sleep: %s</string>
+    <string name="battery_monitor_held_awake">Held awake: %1$s (%2$s%%)</string>
+    <string name="battery_monitor_charge_time">Charging time: %s</string>
+    <string name="battery_monitor_duration_hm">%1$dh %2$dm</string>
+    <string name="battery_monitor_duration_ms">%1$dm %2$ds</string>
+    <string name="battery_monitor_duration_s">%ds</string>
 </resources>

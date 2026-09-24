@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_show_notification"
+        android:title="@string/battery_monitor_enable_notification"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/action_reset"
+        android:title="@string/battery_monitor_reset"
+        android:showAsAction="never" />
+</menu>

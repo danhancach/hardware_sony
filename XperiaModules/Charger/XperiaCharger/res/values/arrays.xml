@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2025 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string-array name="charger_mode_entries">
+        <item>@string/charger_mode_auto</item>
+        <item>@string/charger_mode_manual</item>
+        <item>@string/charger_mode_limit</item>
+    </string-array>
+    <string-array name="charger_mode_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="battery_monitor_range_entries">
+        <item>@string/battery_monitor_range_since_start</item>
+        <item>@string/battery_monitor_range_since_full</item>
+        <item>@string/battery_monitor_range_since_now</item>
+    </string-array>
+</resources>

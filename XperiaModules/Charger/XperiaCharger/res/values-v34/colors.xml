@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+  API 34+: ep system_*_light (values-night dung _dark).
+-->
+<resources>
+    <color name="battery_monitor_card_surface">@android:color/system_surface_bright_light</color>
+    <color name="battery_monitor_popup_surface">@android:color/system_surface_container_high_light</color>
+</resources>
