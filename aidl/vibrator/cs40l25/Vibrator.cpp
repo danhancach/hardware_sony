@@ -1,17 +1,7 @@
 /*
  * Copyright (C) 2017 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #include "Vibrator.h"
@@ -23,12 +13,14 @@
 #include <stdio.h>
 #include <utils/Trace.h>
 
+#include <algorithm>
 #include <cinttypes>
 #include <cmath>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <sstream>
+#include <unistd.h>
 
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
@@ -36,6 +28,8 @@
 
 #define PROC_SND_PCM "/proc/asound/pcm"
 #define HAPTIC_PCM_DEVICE_SYMBOL "haptic nohost playback"
+// pdx237: MI2S-LPAIF-RX-PRIMARY cs40l2x-codec (khong co "haptic nohost")
+#define HAPTIC_PCM_CS40_SYMBOL "cs40l2x"
 
 namespace aidl {
 namespace android {
@@ -120,6 +114,10 @@ static constexpr float PWLE_BW_MAP_SIZE =
         1 + ((PWLE_FREQUENCY_MAX_HZ - PWLE_FREQUENCY_MIN_HZ) / PWLE_FREQUENCY_RESOLUTION_HZ);
 static constexpr float RAMP_DOWN_CONSTANT = 1048.576f;
 static constexpr float RAMP_DOWN_TIME_MS = 0.0f;
+
+static constexpr uint32_t MIN_EFFECT_SLOT_COUNT = WAVEFORM_SONY_DOUBLE_CLICK_INDEX + 1;
+static constexpr int EFFECT_COUNT_READ_MAX_RETRIES = 50;
+static constexpr useconds_t EFFECT_COUNT_READ_RETRY_DELAY_US = 20000;
 
 static struct pcm_config haptic_nohost_config = {
         .channels = 1,
@@ -208,12 +206,57 @@ enum class AlwaysOnId : uint32_t {
     GPIO_FALL,
 };
 
+void Vibrator::loadEffectDurations() {
+    uint32_t effectCount = 0;
+    bool countRead = false;
+
+    for (int attempt = 0; attempt < EFFECT_COUNT_READ_MAX_RETRIES; ++attempt) {
+        effectCount = 0;
+        if (mHwApi->getEffectCount(&effectCount) && effectCount >= MIN_EFFECT_SLOT_COUNT) {
+            countRead = true;
+            break;
+        }
+        usleep(EFFECT_COUNT_READ_RETRY_DELAY_US);
+    }
+
+    if (!countRead) {
+        ALOGE("Failed to read num_waves after %d retries (count=%u), using minimum %u",
+              EFFECT_COUNT_READ_MAX_RETRIES, effectCount, MIN_EFFECT_SLOT_COUNT);
+        effectCount = std::max(effectCount, MIN_EFFECT_SLOT_COUNT);
+    }
+
+    mEffectDurations.resize(effectCount);
+    for (size_t effectIndex = 0; effectIndex < effectCount; effectIndex++) {
+        mHwApi->setEffectIndex(effectIndex);
+        uint32_t effectDuration;
+        if (mHwApi->getEffectDuration(&effectDuration)) {
+            mEffectDurations[effectIndex] = std::ceil(effectDuration / EFFECT_FREQUENCY_KHZ);
+        }
+    }
+}
+
+uint32_t Vibrator::effectDurationMs(uint32_t effectIndex) const {
+    if (effectIndex >= mEffectDurations.size()) {
+        ALOGE("Effect duration requested for invalid index %u (size=%zu)", effectIndex,
+              mEffectDurations.size());
+        return 0;
+    }
+    return mEffectDurations[effectIndex];
+}
+
 Vibrator::Vibrator(std::unique_ptr<HwApi> hwapi, std::unique_ptr<HwCal> hwcal)
-    : mHwApi(std::move(hwapi)), mHwCal(std::move(hwcal)), mAsyncHandle(std::async([] {})) {
+    : mHwApi(std::move(hwapi)),
+      mHwCal(std::move(hwcal)),
+      mAsyncHandle(std::async([] {})),
+      mHapticPcm(nullptr),
+      mCard(-1),
+      mDevice(-1),
+      mHasHapticAlsaDevice(false),
+      mHapticPcmShared(false),
+      mIsUnderExternalControl(false) {
     int32_t longFreqencyShift;
     uint32_t calVer;
     uint32_t caldata;
-    uint32_t effectCount;
 
     if (!mHwApi->setState(true)) {
         ALOGE("Failed to set state (%d): %s", errno, strerror(errno));
@@ -267,15 +310,13 @@ Vibrator::Vibrator(std::unique_ptr<HwApi> hwapi, std::unique_ptr<HwCal> hwcal)
         mHwCal->getLongVolLevels(&mLongEffectVol);
     }
 
-    mHwApi->getEffectCount(&effectCount);
-    mEffectDurations.resize(effectCount);
-    for (size_t effectIndex = 0; effectIndex < effectCount; effectIndex++) {
-        mHwApi->setEffectIndex(effectIndex);
-        uint32_t effectDuration;
-        if (mHwApi->getEffectDuration(&effectDuration)) {
-            mEffectDurations[effectIndex] = std::ceil(effectDuration / EFFECT_FREQUENCY_KHZ);
-        }
-    }
+    // Soft-cap vol min Click/Tick ve V_CTICK_DEFAULT (10): cal pdx237 ~50 khong
+    // cho LIGHT ~1/3 bien do (vol~17). Max STRONG giu nguyen tu cal.
+    static constexpr uint32_t kClickTickVolMinSoftCap = 10;
+    mClickEffectVol[0] = std::min(mClickEffectVol[0], kClickTickVolMinSoftCap);
+    mTickEffectVol[0] = std::min(mTickEffectVol[0], kClickTickVolMinSoftCap);
+
+    loadEffectDurations();
 
     mHwApi->setClabEnable(true);
 
@@ -289,6 +330,7 @@ Vibrator::Vibrator(std::unique_ptr<HwApi> hwapi, std::unique_ptr<HwCal> hwcal)
     mGenerateBandwidthAmplitudeMapDone = false;
     mBandwidthAmplitudeMap = generateBandwidthAmplitudeMap();
     mIsUnderExternalControl = false;
+    // Khong reset mHapticPcmShared o day — getCapabilities co the da goi find().
     setPwleRampDown();
     mIsChirpEnabled = mHwCal->isChirpEnabled();
 }
@@ -440,7 +482,7 @@ ndk::ScopedAStatus Vibrator::getPrimitiveDuration(CompositePrimitive primitive,
             return status;
         }
 
-        *durationMs = mEffectDurations[effectIndex];
+        *durationMs = effectDurationMs(effectIndex);
     } else {
         *durationMs = 0;
     }
@@ -499,7 +541,7 @@ ndk::ScopedAStatus Vibrator::compose(const std::vector<CompositeEffect>& composi
 #ifdef USE_EFFECT_DURATION_POLLING
             {
                 const std::scoped_lock<std::mutex> lock(mTotalDurationMutex);
-                mTotalDuration += mEffectDurations[effectIndex];
+                mTotalDuration += effectDurationMs(effectIndex);
             }
 #endif  // USE_EFFECT_DURATION_POLLING
         }
@@ -1007,12 +1049,13 @@ ndk::ScopedAStatus Vibrator::getSimpleDetails(Effect effect, EffectStrength stre
     float intensity;
     uint32_t volLevel;
 
+    // Prebaked scale no-op: LIGHT 0.08->vol~17 (~1/3 vol~51), MEDIUM 0.55, STRONG 1.0.
     switch (strength) {
         case EffectStrength::LIGHT:
-            intensity = 0.5f;
+            intensity = 0.08f;
             break;
         case EffectStrength::MEDIUM:
-            intensity = 0.7f;
+            intensity = 0.55f;
             break;
         case EffectStrength::STRONG:
             intensity = 1.0f;
@@ -1026,10 +1069,12 @@ ndk::ScopedAStatus Vibrator::getSimpleDetails(Effect effect, EffectStrength stre
             effectIndex = WAVEFORM_LIGHT_TICK_INDEX;
             break;
         case Effect::TICK:
-            effectIndex = WAVEFORM_LOW_TICK_INDEX;
+            // Volume key / UI tick: LOW_TICK qua nhe -> dung CLICK slot.
+            effectIndex = WAVEFORM_CLICK_INDEX;
             break;
         case Effect::CLICK:
-            effectIndex = WAVEFORM_CLICK_INDEX;
+            // Click he thong: nang len HEAVY_CLICK (van giu HEAVY_CLICK rieng).
+            effectIndex = WAVEFORM_SONY_HEAVY_CLICK_INDEX;
             break;
         case Effect::HEAVY_CLICK:
             effectIndex = WAVEFORM_SONY_HEAVY_CLICK_INDEX;
@@ -1050,7 +1095,7 @@ ndk::ScopedAStatus Vibrator::getSimpleDetails(Effect effect, EffectStrength stre
     }
 
     volLevel = intensityToVolLevel(intensity, effectIndex);
-    timeMs = mEffectDurations[effectIndex] + MAX_COLD_START_LATENCY_MS;
+    timeMs = effectDurationMs(effectIndex) + MAX_COLD_START_LATENCY_MS;
 
 #ifdef USE_EFFECT_DURATION_POLLING
     {
@@ -1305,11 +1350,19 @@ bool Vibrator::findHapticAlsaDevice(int* card, int* device) {
     std::ifstream myfile(PROC_SND_PCM);
     if (myfile.is_open()) {
         while (getline(myfile, line)) {
-            if (line.find(HAPTIC_PCM_DEVICE_SYMBOL) != std::string::npos) {
+            bool isNohost =
+                    line.find(HAPTIC_PCM_DEVICE_SYMBOL) != std::string::npos;
+            bool isCs40 = line.find(HAPTIC_PCM_CS40_SYMBOL) != std::string::npos &&
+                          line.find("playback") != std::string::npos;
+            if (isNohost || isCs40) {
                 std::stringstream ss(line);
                 std::string currentToken;
                 std::getline(ss, currentToken, ':');
                 sscanf(currentToken.c_str(), "%d-%d", card, device);
+                // cs40 MI2S chung voi audio HAL — khong pcm_open o vibrator
+                mHapticPcmShared = isCs40 && !isNohost;
+                ALOGD("found haptic ALSA pcm %s (shared=%d)", line.c_str(),
+                      mHapticPcmShared);
                 return true;
             }
         }
@@ -1338,6 +1391,20 @@ bool Vibrator::hasHapticAlsaDevice() {
 
 bool Vibrator::enableHapticPcmAmp(struct pcm** haptic_pcm, bool enable, int card, int device) {
     int ret = 0;
+    (void)card;
+    (void)device;
+
+    // pdx237: MI2S→cs40 luon do audio HAL so huu. Vibrator chi can dig_scale
+    // (setGlobalAmplitude) de CAP_EXTERNAL_CONTROL thanh cong — khong pcm_open.
+    if (mHapticPcmShared || mHasHapticAlsaDevice) {
+        ALOGD("external control %s: skip pcm open (cs40 shared with audio, shared=%d)",
+              enable ? "on" : "off", mHapticPcmShared);
+        if (!enable && *haptic_pcm) {
+            pcm_close(*haptic_pcm);
+            *haptic_pcm = NULL;
+        }
+        return true;
+    }
 
     if (enable) {
         *haptic_pcm = pcm_open(card, device, PCM_OUT, &haptic_nohost_config);
