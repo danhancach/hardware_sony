@@ -163,7 +163,14 @@ class BatteryMonitorFragment : Fragment() {
         ).also {
             it.setDropDownViewResource(R.layout.battery_monitor_spinner_dropdown_item)
         }
-        spinner.setSelection(0, false)
+        // 3 muc UI (start/full/now); restore Global truoc listener
+        selectedRange = BatteryMonitorPrefs.getSelectedRange(requireContext())
+        val initialPosition = when (selectedRange) {
+            StatsRange.SINCE_FULL -> 1
+            StatsRange.SINCE_NOW -> 2
+            else -> 0
+        }
+        spinner.setSelection(initialPosition, false)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -176,21 +183,23 @@ class BatteryMonitorFragment : Fragment() {
                     2 -> StatsRange.SINCE_NOW
                     else -> StatsRange.SINCE_START
                 }
+                // Phong thu: gan listener co the goi ngay — khong persist lan khoi tao
                 if (!spinnerReady) {
                     spinnerReady = true
                     selectedRange = range
                     return
                 }
                 if (range == StatsRange.SINCE_NOW && selectedRange != StatsRange.SINCE_NOW) {
-                    // Chon "Ke tu bay gio" — bat dau dem lai tu luc nay
                     statsTracker.resetRange(StatsRange.SINCE_NOW)
                 }
                 selectedRange = range
+                BatteryMonitorPrefs.setSelectedRange(requireContext(), range)
                 refreshUi()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
+        spinnerReady = true
     }
 
     private fun setupMenu() {

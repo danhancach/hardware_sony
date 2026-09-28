@@ -10,8 +10,8 @@ import android.os.SystemClock
 import android.util.Log
 
 /**
- * Tich luy thong ke pin (3 khoang) — singleton dung chung Service + UI.
- * Hao pin uu tien charge_counter (uAh); fallback % nguyen.
+ * Tich luy thong ke pin (cac StatsRange) — singleton dung chung Service + UI.
+ * Hao pin uu tien charge_counter (uAh); fallback precise/% nguyen.
  */
 class BatteryStatsTracker private constructor(context: Context) {
 
@@ -131,10 +131,10 @@ class BatteryStatsTracker private constructor(context: Context) {
         val counter = snap?.chargeCounterUa ?: -1L
         val chargeFull = snap?.chargeFullUa ?: -1L
 
-        // Hao pin chi khi ca khoang truoc va hien tai deu khong cam sac
-        if (!lastPlugged && !plugged) {
+        // Hao pin theo trang thai TRUOC mau (lastPlugged) — tranh mat doan khi chuyen sac/xa
+        if (!lastPlugged) {
             val drainPct = computeDrainPercentLocked(
-                levelPercent, precise, counter, chargeFull, largeGap
+                levelPercent, precise, counter, chargeFull, largeGap, dtElapsed
             )
             if (drainPct > 0f) {
                 StatsRange.entries.forEach { range ->
@@ -151,7 +151,15 @@ class BatteryStatsTracker private constructor(context: Context) {
             Log.i(TAG, "hit full — reset SINCE_FULL")
         }
 
-        if (lastPlugged != plugged) {
+        // Sau accumulate (sample van dung lastPlugged=true) — xoa sach tu luc rut sac
+        if (lastPlugged && !plugged) {
+            ranges[StatsRange.SINCE_UNPLUG.ordinal].clear()
+            Log.i(TAG, "unplug — reset SINCE_UNPLUG")
+        }
+
+        // Bat pluggedChanged TRUOC khi gan lastPlugged — neu so sau gan thi luon false
+        val pluggedChanged = lastPlugged != plugged
+        if (pluggedChanged) {
             Log.d(TAG, "plugged $lastPlugged -> $plugged (chargeMs will stop/start)")
         }
 
@@ -167,7 +175,7 @@ class BatteryStatsTracker private constructor(context: Context) {
 
         val shouldFlush = !screenOn ||
             largeGap ||
-            lastPlugged != plugged ||
+            pluggedChanged ||
             (nowElapsed - lastFlushElapsed) >= FLUSH_INTERVAL_MS
         if (shouldFlush) {
             flushLocked(force = false)
@@ -217,24 +225,19 @@ class BatteryStatsTracker private constructor(context: Context) {
         precise: Float,
         counter: Long,
         chargeFull: Long,
-        largeGap: Boolean
-    ): Float {
-        if (!largeGap && counter > 0L && lastChargeCounter > 0L && chargeFull > 0L &&
-            counter < lastChargeCounter
-        ) {
-            val delta = (lastChargeCounter - counter).toDouble()
-            return ((delta / chargeFull.toDouble()) * 100.0).toFloat().coerceAtLeast(0f)
-        }
-        if (!largeGap && precise >= 0f && lastPreciseCapacity >= 0f &&
-            precise < lastPreciseCapacity
-        ) {
-            return (lastPreciseCapacity - precise).coerceAtLeast(0f)
-        }
-        if (lastLevel in 0..100 && levelPercent in 0..100 && levelPercent < lastLevel) {
-            return (lastLevel - levelPercent).toFloat()
-        }
-        return 0f
-    }
+        largeGap: Boolean,
+        dtElapsed: Long
+    ): Float = BatteryStatsLogic.computeDrainPercent(
+        lastLevel = lastLevel,
+        levelPercent = levelPercent,
+        lastPrecise = lastPreciseCapacity,
+        precise = precise,
+        lastCounter = lastChargeCounter,
+        counter = counter,
+        chargeFull = chargeFull,
+        largeGap = largeGap,
+        dtElapsed = dtElapsed
+    )
 
     private fun accumulateLocked(
         a: RangeAccum,
@@ -285,13 +288,39 @@ class BatteryStatsTracker private constructor(context: Context) {
             a.heldAwakeMs = prefs.getLong(p + KEY_HELD_AWAKE_MS, 0L)
             a.chargeMs = prefs.getLong(p + KEY_CHARGE_MS, 0L)
         }
-        // Dong bo lai voi phan cung — tranh lastPlugged treo sau unplug khi UI/service tach truoc day
+        // Dong bo phan cung sau restart — khong cong khoang chet, phat hien su kien offline ro rang
         val snap = BatteryReader.read(appContext)
         if (snap != null) {
-            lastPlugged = snap.pluggedType != 0
+            val level = snap.levelPercent
+            val plugged = snap.pluggedType != 0
+            val savedPlugged = lastPlugged
+            val savedLevel = lastLevel
+
+            var offlineEvent = false
+            if (savedPlugged && !plugged) {
+                ranges[StatsRange.SINCE_UNPLUG.ordinal].clear()
+                offlineEvent = true
+                Log.i(TAG, "load: unplug offline — reset SINCE_UNPLUG")
+            }
+            if (level == 100 && savedLevel in 0..99) {
+                ranges[StatsRange.SINCE_FULL.ordinal].clear()
+                wasFull = true
+                offlineEvent = true
+                Log.i(TAG, "load: full offline — reset SINCE_FULL")
+            } else if (level in 0..99 && savedLevel == 100) {
+                wasFull = false
+                offlineEvent = true
+            }
+            if (offlineEvent) dirty = true
+
+            lastPlugged = plugged
             lastScreenOn = powerManager?.isInteractive == true
-            if (snap.levelPercent in 0..100) lastLevel = snap.levelPercent
-            // Dat moc thoi gian = bay gio de khong cong nham khoang cu
+            if (level in 0..100) lastLevel = level
+            val counter = snap.chargeCounterUa
+            if (counter > 0L) lastChargeCounter = counter
+            val precise = snap.preciseCapacityPercent
+            if (precise >= 0f) lastPreciseCapacity = precise
+            // Dat moc thoi gian = bay gio — khong tu tinh bu khoang service chet
             lastElapsed = SystemClock.elapsedRealtime()
             lastUptime = SystemClock.uptimeMillis()
         }
