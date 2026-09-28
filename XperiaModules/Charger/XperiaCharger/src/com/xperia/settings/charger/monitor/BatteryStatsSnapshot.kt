@@ -19,22 +19,14 @@ data class BatteryStatsSnapshot(
     val chargeMs: Long
 ) {
     val screenOnDrainPerHour: Float
-        get() = drainPerHour(screenOnDrainPercent, screenOnMs)
+        get() = BatteryStatsLogic.drainPerHour(screenOnDrainPercent, screenOnMs)
 
     val screenOffDrainPerHour: Float
-        get() = drainPerHour(screenOffDrainPercent, screenOffMs)
+        get() = BatteryStatsLogic.drainPerHour(screenOffDrainPercent, screenOffMs)
 
     /** Ty le giu danh thuc trong thoi gian man hinh tat (0..100). */
     val heldAwakePercentOfScreenOff: Float
         get() = if (screenOffMs <= 0L) 0f else (heldAwakeMs * 100f) / screenOffMs
-
-    private fun drainPerHour(drainPercent: Float, durationMs: Long): Float {
-        // Toi thieu 30s de tranh spike %/h khi moi bat dau
-        if (durationMs < 30_000L || drainPercent <= 0f) return 0f
-        val hours = durationMs / 3_600_000f
-        if (hours <= 0f) return 0f
-        return drainPercent / hours
-    }
 
     companion object {
         val EMPTY = BatteryStatsSnapshot(0, 0, 0, 0f, 0f, 0, 0, 0)
