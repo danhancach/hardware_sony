@@ -21,9 +21,9 @@
     </string-array>
 
     <string-array name="cpu_active_limit_entries">
-        <item>Không giới hạn (mặc định)</item>
+        <item>Không giới hạn</item>
         <item>Giới hạn 90%</item>
-        <item>Giới hạn 80%</item>
+        <item>Giới hạn 80% (mặc định)</item>
         <item>Giới hạn 70%</item>
     </string-array>
 </resources>
