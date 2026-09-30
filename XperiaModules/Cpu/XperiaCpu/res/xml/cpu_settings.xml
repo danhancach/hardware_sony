@@ -17,7 +17,7 @@
             android:summary="%s"
             android:entries="@array/cpu_idle_limit_entries"
             android:entryValues="@array/cpu_idle_limit_values"
-            android:defaultValue="off"
+            android:defaultValue="powersave"
             android:persistent="false"
             app:iconSpaceReserved="false" />
 
@@ -27,7 +27,7 @@
             android:summary="%s"
             android:entries="@array/cpu_active_limit_entries"
             android:entryValues="@array/cpu_active_limit_values"
-            android:defaultValue="100"
+            android:defaultValue="80"
             android:persistent="false"
             app:iconSpaceReserved="false" />
 

@@ -27,9 +27,9 @@
     </string-array>
 
     <string-array name="cpu_active_limit_entries">
-        <item>No limit (default)</item>
+        <item>No limit</item>
         <item>Limit to 90%</item>
-        <item>Limit to 80%</item>
+        <item>Limit to 80% (default)</item>
         <item>Limit to 70%</item>
     </string-array>
     <string-array name="cpu_active_limit_values">

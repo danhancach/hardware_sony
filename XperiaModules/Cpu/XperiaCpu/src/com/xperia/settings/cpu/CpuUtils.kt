@@ -30,7 +30,7 @@ class CpuUtils(private val context: Context) {
                 Settings.Global.putInt(context.contentResolver, KEY_IDLE_LIMIT_LEGACY, 0)
                 return MODE_35
             }
-            return MODE_OFF
+            return MODE_POWERSAVE
         }
         set(value) {
             val v = if (value in IDLE_MODES) value else MODE_OFF
@@ -39,14 +39,14 @@ class CpuUtils(private val context: Context) {
 
     var activeLimitPercent: Int
         get() {
-            val v = Settings.Global.getInt(context.contentResolver, KEY_ACTIVE_LIMIT, 100)
-            return if (v in ACTIVE_PERCENTS) v else 100
+            val v = Settings.Global.getInt(context.contentResolver, KEY_ACTIVE_LIMIT, 80)
+            return if (v in ACTIVE_PERCENTS) v else 80
         }
         set(value) {
             Settings.Global.putInt(
                 context.contentResolver,
                 KEY_ACTIVE_LIMIT,
-                if (value in ACTIVE_PERCENTS) value else 100
+                if (value in ACTIVE_PERCENTS) value else 80
             )
         }
 
