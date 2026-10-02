@@ -250,6 +250,21 @@ public class DisplayTransformManager {
      */
     public boolean setColorMode(int colorMode, float[] nightDisplayMatrix,
             int compositionColorMode) {
+        applyDisplayColorSetting(colorMode, compositionColorMode);
+
+        setColorMatrix(LEVEL_COLOR_MATRIX_NIGHT_DISPLAY, nightDisplayMatrix);
+
+        updateConfiguration();
+
+        return true;
+    }
+
+    /**
+     * Chi cap nhat SF DisplayColorSetting / saturation (txn 1022/1023).
+     * Khong dung color matrix - tranh ghi de PCC level 5690 hay Night Light he thong.
+     * Dung Display.COLOR_MODE_INVALID de giu composition color mode hien tai (P3).
+     */
+    public boolean applyDisplayColorSetting(int colorMode, int compositionColorMode) {
         if (colorMode == ColorDisplayManager.COLOR_MODE_NATURAL) {
             applySaturation(COLOR_SATURATION_NATURAL);
             setDisplayColor(DISPLAY_COLOR_MANAGED, compositionColorMode);
@@ -266,12 +281,9 @@ public class DisplayTransformManager {
                 && colorMode <= ColorDisplayManager.VENDOR_COLOR_MODE_RANGE_MAX) {
             applySaturation(COLOR_SATURATION_NATURAL);
             setDisplayColor(colorMode, compositionColorMode);
+        } else {
+            return false;
         }
-
-        setColorMatrix(LEVEL_COLOR_MATRIX_NIGHT_DISPLAY, nightDisplayMatrix);
-
-        updateConfiguration();
-
         return true;
     }
 
