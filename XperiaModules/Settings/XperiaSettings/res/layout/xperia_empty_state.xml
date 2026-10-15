@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+  Empty state khi khong co module con nao kha dung.
+  Bo android:tint tren ImageView de tranh UnsupportedOperationException tren framework ImageView;
+  icon ke thua tint tu vector drawable ic_xperia_logo (?android:attr/colorControlNormal).
+  Text dung textColorSecondary voi alpha ~0.6 theo chuan Expressive.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="96dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="48dp">
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:alpha="0.6"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_xperia_logo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:alpha="0.6"
+        android:gravity="center"
+        android:text="@string/xperia_settings_empty"
+        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+        android:textColor="?android:attr/textColorSecondary" />
+
+</LinearLayout>

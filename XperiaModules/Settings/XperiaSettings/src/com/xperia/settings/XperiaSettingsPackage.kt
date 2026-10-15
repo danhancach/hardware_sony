@@ -195,4 +195,33 @@ class XperiaSettingsPackage(private val fragment: PreferenceFragmentCompat) {
             category?.isVisible = false
         }
     }
+
+    // Kiem tra va hien thi empty state khi khong con module con nao kha dung
+    fun updateEmptyState() {
+        var hasVisiblePref = false
+        val screen = fragment.preferenceScreen ?: return
+        for (i in 0 until screen.preferenceCount) {
+            val pref = screen.getPreference(i)
+            if (pref.key != "xperia_empty_state" && pref.isVisible) {
+                if (pref is PreferenceCategory) {
+                    var categoryHasVisibleChild = false
+                    for (j in 0 until pref.preferenceCount) {
+                        if (pref.getPreference(j).isVisible) {
+                            categoryHasVisibleChild = true
+                            break
+                        }
+                    }
+                    if (categoryHasVisibleChild) {
+                        hasVisiblePref = true
+                        break
+                    }
+                } else {
+                    hasVisiblePref = true
+                    break
+                }
+            }
+        }
+        val emptyPref = fragment.findPreference<Preference>("xperia_empty_state")
+        emptyPref?.isVisible = !hasVisiblePref
+    }
 }

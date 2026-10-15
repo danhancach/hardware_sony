@@ -51,7 +51,7 @@
                 android:name=".DisplaySettingsActivity"
                 android:exported="false"
                 android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize|density"
-                android:theme="@style/Theme.SubSettingsBase"
+                android:theme="@style/Theme.SubSettingsBase.Expressive"
                 android:label="@string/display_settings_title">
             <intent-filter>
                 <action android:name="com.android.settings.action.IA_SETTINGS"/>

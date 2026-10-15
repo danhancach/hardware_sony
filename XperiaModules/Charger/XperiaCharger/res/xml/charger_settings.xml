@@ -53,6 +53,7 @@
 
         <SwitchPreferenceCompat
             android:key="device_charging_enable"
+            app:iconSpaceReserved="false"
             android:title="@string/charger_hs_enable"
             android:summary="@string/charger_hs_summary"
             android:persistent="false" />

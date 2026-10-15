@@ -8,6 +8,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/app_name">
 
+    <!-- Empty state khi tat ca module bi an -->
+    <com.android.settingslib.widget.LayoutPreference
+        android:key="xperia_empty_state"
+        android:layout="@layout/xperia_empty_state"
+        android:selectable="false"
+        app:allowDividerBelow="false"
+        app:isPreferenceVisible="false" />
+
     <PreferenceCategory
         android:key="display"
         app:iconSpaceReserved="false"

@@ -48,4 +48,7 @@
     <!-- Xperia Stream -->
     <string name="accui_settings_title">Xperia Stream</string>
     <string name="accui_settings_summary">The Xperia Stream provides you with enhanced display output and streaming capabilities and a fan that will help the phone dissipate heat, improving performance</string>
+
+    <!-- Empty State -->
+    <string name="xperia_settings_empty">No Xperia features available</string>
 </resources>

@@ -8,9 +8,9 @@ package com.xperia.settings.display
 import android.content.res.Configuration
 import android.os.Bundle
 
-import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
+import com.xperia.settings.ui.XperiaCollapsingToolbarBaseActivity
 
-class DisplaySettingsActivity : CollapsingToolbarBaseActivity() {
+class DisplaySettingsActivity : XperiaCollapsingToolbarBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = getString(R.string.display_settings_title)

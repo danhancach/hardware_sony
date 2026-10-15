@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2023 XperiaLabs Project
+  ~ Copyright (C) 2023-2026 XperiaLabs Project
   ~
   ~ SPDX-License-Identifier: Apache-2.0
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/viewpager_wrapper"
+    <!-- Card bo 20dp SurfaceBright boc ViewPager2 preview -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/viewpager_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="true"
-        android:clipToPadding="true">
+        android:layout_marginStart="@dimen/creator_mode_card_margin_horizontal"
+        android:layout_marginEnd="@dimen/creator_mode_card_margin_horizontal"
+        app:cardCornerRadius="@dimen/creator_mode_card_corner_radius"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/settingslib_materialColorSurfaceBright">
 
-        <androidx.viewpager.widget.ViewPager
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/creator_mode_preview_height"
-            android:background="?android:attr/colorBackground" />
-    </FrameLayout>
+            android:layout_height="@dimen/creator_mode_preview_height" />
+
+    </androidx.cardview.widget.CardView>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -38,8 +43,8 @@
             android:paddingEnd="24dp">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_arrow_left" />
         </FrameLayout>
@@ -60,8 +65,8 @@
             android:paddingEnd="24dp">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_arrow_right" />
         </FrameLayout>
