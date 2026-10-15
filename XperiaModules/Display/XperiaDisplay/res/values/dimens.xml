@@ -8,4 +8,10 @@
 <resources>
     <dimen name="creator_mode_preview_height">320dp</dimen>
     <dimen name="creator_mode_preview_nav_height">48dp</dimen>
+    <!-- Expressive card bo 20dp va margin ngang 16dp -->
+    <dimen name="creator_mode_card_corner_radius">20dp</dimen>
+    <dimen name="creator_mode_card_margin_horizontal">16dp</dimen>
+    <!-- Dot indicator dp/dimen khong dung pixel cung -->
+    <dimen name="creator_mode_dot_size">8dp</dimen>
+    <dimen name="creator_mode_dot_margin">4dp</dimen>
 </resources>

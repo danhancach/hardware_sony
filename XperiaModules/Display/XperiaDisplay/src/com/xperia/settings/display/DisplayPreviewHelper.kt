@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 XperiaLabs Project
+ * Copyright (C) 2024-2026 XperiaLabs Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,8 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 
 import com.android.settingslib.widget.LayoutPreference
 
@@ -21,11 +21,11 @@ import com.xperia.settings.display.R
 
 class DisplayPreviewHelper private constructor(
     private val previewHost: PreviewHost,
-    private val pageList: ArrayList<View>,
-    private val viewPagerImages: Array<View?>,
+    private val pageCount: Int,
     private val dotIndicators: Array<ImageView?>,
 ) {
-    val viewPager: ViewPager = previewHost.findViewById(R.id.viewpager)
+    // Nang cap len ViewPager2 thay cho ViewPager1 cu
+    val viewPager: ViewPager2 = previewHost.findViewById(R.id.viewpager)
 
     fun restorePageIndex(savedInstanceState: Bundle?) {
         val pageIndex = savedInstanceState?.getInt(PAGE_VIEWER_SELECTION_INDEX, 0) ?: 0
@@ -38,13 +38,11 @@ class DisplayPreviewHelper private constructor(
     }
 
     private fun updateIndicator(position: Int) {
-        for (i in pageList.indices) {
+        for (i in dotIndicators.indices) {
             if (position == i) {
-                dotIndicators[i]!!.setBackgroundResource(R.drawable.ic_creator_mode_indicator_focused)
-                viewPagerImages[i]!!.visibility = View.VISIBLE
+                dotIndicators[i]?.setBackgroundResource(R.drawable.ic_creator_mode_indicator_focused)
             } else {
-                dotIndicators[i]!!.setBackgroundResource(R.drawable.ic_creator_mode_indicator_unfocused)
-                viewPagerImages[i]!!.visibility = View.INVISIBLE
+                dotIndicators[i]?.setBackgroundResource(R.drawable.ic_creator_mode_indicator_unfocused)
             }
         }
 
@@ -52,24 +50,21 @@ class DisplayPreviewHelper private constructor(
         val arrowNext = previewHost.findViewById<View>(R.id.arrow_next)
         when (position) {
             0 -> {
-                arrowPrevious.visibility = View.INVISIBLE
-                arrowNext.visibility = View.VISIBLE
+                arrowPrevious?.visibility = View.INVISIBLE
+                arrowNext?.visibility = View.VISIBLE
             }
-            pageList.size - 1 -> {
-                arrowPrevious.visibility = View.VISIBLE
-                arrowNext.visibility = View.INVISIBLE
+            pageCount - 1 -> {
+                arrowPrevious?.visibility = View.VISIBLE
+                arrowNext?.visibility = View.INVISIBLE
             }
             else -> {
-                arrowPrevious.visibility = View.VISIBLE
-                arrowNext.visibility = View.VISIBLE
+                arrowPrevious?.visibility = View.VISIBLE
+                arrowNext?.visibility = View.VISIBLE
             }
         }
     }
 
     companion object {
-        private const val DOT_INDICATOR_SIZE = 12
-        private const val DOT_INDICATOR_LEFT_PADDING = 6
-        private const val DOT_INDICATOR_RIGHT_PADDING = 6
         private const val PAGE_VIEWER_SELECTION_INDEX = "page_viewer_selection_index"
 
         fun setup(
@@ -98,63 +93,42 @@ class DisplayPreviewHelper private constructor(
                 R.layout.creator_mode_view2,
             )
 
-            val viewPager = previewHost.findViewById<ViewPager>(R.id.viewpager)
-            val viewPagerImages = arrayOfNulls<View>(pageLayouts.size)
-            val pageList = ArrayList<View>(pageLayouts.size)
-
-            for (idx in pageLayouts.indices) {
-                viewPagerImages[idx] = layoutInflater.inflate(pageLayouts[idx], null)
-                pageList.add(viewPagerImages[idx]!!)
-            }
-
-            viewPager.adapter = ColorPagerAdapter(pageList)
+            val viewPager = previewHost.findViewById<ViewPager2>(R.id.viewpager)
+            viewPager.adapter = ColorPagerAdapter(pageLayouts)
 
             previewHost.findViewById<View>(R.id.arrow_previous)?.setOnClickListener {
-                viewPager.setCurrentItem(viewPager.currentItem - 1, true)
+                if (viewPager.currentItem > 0) {
+                    viewPager.setCurrentItem(viewPager.currentItem - 1, true)
+                }
             }
             previewHost.findViewById<View>(R.id.arrow_next)?.setOnClickListener {
-                viewPager.setCurrentItem(viewPager.currentItem + 1, true)
+                if (viewPager.currentItem < pageLayouts.size - 1) {
+                    viewPager.setCurrentItem(viewPager.currentItem + 1, true)
+                }
             }
 
+            // Su dung dimen dp chuan hoa, khong dung pixel cung
+            val dotSize = context.resources.getDimensionPixelSize(R.dimen.creator_mode_dot_size)
+            val dotMargin = context.resources.getDimensionPixelSize(R.dimen.creator_mode_dot_margin)
+
             val viewGroup = previewHost.findViewById<ViewGroup>(R.id.viewGroup)
-            val dotIndicators = arrayOfNulls<ImageView>(pageList.size)
-            for (i in pageList.indices) {
+            viewGroup.removeAllViews()
+            val dotIndicators = arrayOfNulls<ImageView>(pageLayouts.size)
+            for (i in pageLayouts.indices) {
                 val imageView = ImageView(context)
-                val lp = ViewGroup.MarginLayoutParams(DOT_INDICATOR_SIZE, DOT_INDICATOR_SIZE)
-                lp.setMargins(DOT_INDICATOR_LEFT_PADDING, 0, DOT_INDICATOR_RIGHT_PADDING, 0)
+                val lp = ViewGroup.MarginLayoutParams(dotSize, dotSize)
+                lp.setMargins(dotMargin, 0, dotMargin, 0)
                 imageView.layoutParams = lp
                 dotIndicators[i] = imageView
                 viewGroup.addView(dotIndicators[i])
             }
 
-            val helper = DisplayPreviewHelper(previewHost, pageList, viewPagerImages, dotIndicators)
-            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int,
-                ) {
-                    if (positionOffset != 0f) {
-                        for (idx in pageList.indices) {
-                            val visible = idx == position || idx == position + 1
-                            viewPagerImages[idx]!!.visibility =
-                                if (visible) View.VISIBLE else View.INVISIBLE
-                        }
-                    } else {
-                        val descriptionRes = if (position == 0) {
-                            R.string.creator_mode_content_description
-                        } else {
-                            R.string.xreality_mode_content_description
-                        }
-                        viewPagerImages[position]!!.contentDescription =
-                            context.getString(descriptionRes)
-                        helper.updateIndicator(position)
-                    }
+            val helper = DisplayPreviewHelper(previewHost, pageLayouts.size, dotIndicators)
+            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    helper.updateIndicator(position)
                 }
-
-                override fun onPageSelected(position: Int) {}
-
-                override fun onPageScrollStateChanged(state: Int) {}
             })
 
             helper.updateIndicator(viewPager.currentItem)
@@ -177,27 +151,29 @@ class DisplayPreviewHelper private constructor(
         override fun <T : View> findViewById(id: Int): T = preview.findViewById(id)
     }
 
+    // Adapter RecyclerView cho ViewPager2
     private class ColorPagerAdapter(
-        private val pageViewList: ArrayList<View>,
-    ) : PagerAdapter() {
-        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-            container.removeView(pageViewList[position])
+        private val pageLayouts: List<Int>,
+    ) : RecyclerView.Adapter<ColorPagerAdapter.PageViewHolder>() {
+
+        class PageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(pageLayouts[viewType], parent, false)
+            return PageViewHolder(view)
         }
 
-        override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val page = pageViewList[position]
-            container.addView(
-                page,
-                ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                ),
-            )
-            return page
+        override fun onBindViewHolder(holder: PageViewHolder, position: Int) {
+            val descriptionRes = if (position == 0) {
+                R.string.creator_mode_content_description
+            } else {
+                R.string.xreality_mode_content_description
+            }
+            holder.itemView.contentDescription = holder.itemView.context.getString(descriptionRes)
         }
 
-        override fun getCount(): Int = pageViewList.size
+        override fun getItemCount(): Int = pageLayouts.size
 
-        override fun isViewFromObject(view: View, `object`: Any): Boolean = `object` == view
+        override fun getItemViewType(position: Int): Int = position
     }
 }

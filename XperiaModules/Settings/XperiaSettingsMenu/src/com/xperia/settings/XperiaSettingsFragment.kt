@@ -26,6 +26,7 @@ class XperiaSettingsFragment : SettingsBasePreferenceFragment() {
         xperiaSettingsPackage.setupUSBASettings()
         xperiaSettingsPackage.setupDSMSettings()
         xperiaSettingsPackage.setupACCUISettings()
+        xperiaSettingsPackage.updateEmptyState()
     }
 
     override fun onResume() {

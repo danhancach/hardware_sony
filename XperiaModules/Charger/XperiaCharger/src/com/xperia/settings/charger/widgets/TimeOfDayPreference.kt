@@ -10,9 +10,9 @@ import android.text.format.DateFormat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TimePicker
-import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xperia.settings.charger.ChargerUtils
 import com.xperia.settings.charger.R
 import java.time.LocalTime
@@ -42,7 +42,8 @@ class TimeOfDayPreference @JvmOverloads constructor(
         timePicker.hour = localTime.hour
         timePicker.minute = localTime.minute
 
-        AlertDialog.Builder(context)
+        // Su dung MaterialAlertDialogBuilder de tu dong ap dung dialog corner 28dp va Dynamic Color
+        MaterialAlertDialogBuilder(context)
             .setTitle(title)
             .setView(view)
             .setPositiveButton(R.string.charger_dlg_ok) { _: DialogInterface, _: Int ->

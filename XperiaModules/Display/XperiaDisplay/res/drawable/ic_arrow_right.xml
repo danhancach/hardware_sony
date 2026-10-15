@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2023 The Android Open Source Project
+    Copyright 2026 The Android Open Source Project
     SPDX-License-Identifier: Apache-2.0
 -->
-
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-  <path
-      android:pathData="M0,0h24v24h-24z"/>
-  <path
-      android:pathData="M7.59,5.41L9,4L17,12L9,20L7.59,18.59L14.17,12"
-      android:fillColor="@color/settingslib_materialColorOnSurface"
-      android:fillType="evenOdd"/>
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960"
+    android:tint="?attr/colorOnSurfaceVariant"
+    android:autoMirrored="true">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M321,880L250,809L579,480L250,151L321,80L721,480L321,880Z"/>
 </vector>

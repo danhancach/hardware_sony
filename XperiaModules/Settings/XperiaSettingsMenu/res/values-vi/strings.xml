@@ -39,4 +39,7 @@
 
     <string name="accui_settings_title">Xperia Stream</string>
     <string name="accui_settings_summary">Xperia Stream cung cấp xuất hiển thị và streaming nâng cao cùng quạt tản nhiệt, giúp máy mát hơn và hiệu năng ổn định hơn</string>
+
+    <!-- Empty State -->
+    <string name="xperia_settings_empty">Không có tính năng Xperia khả dụng</string>
 </resources>

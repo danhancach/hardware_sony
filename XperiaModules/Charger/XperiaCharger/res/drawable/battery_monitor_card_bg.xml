@@ -8,5 +8,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="@color/battery_monitor_card_surface" />
-    <corners android:radius="28dp" />
+    <!-- The noi dung don bo goc 20dp chuan Expressive (settingslib_preference_corner_radius) -->
+    <corners android:radius="20dp" />
 </shape>
