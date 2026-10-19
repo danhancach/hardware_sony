@@ -68,15 +68,30 @@
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
     </RadioGroup>
 
-    <!-- Nut mo cai dat 360 Reality Audio cua Sony -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_open_360_app"
-        style="@style/Widget.Material3.Button.TonalButton"
+    <!-- Chu thich hoat dong tren tai nghe -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/sound_enhance_open_360_app"
-        app:icon="@drawable/ic_threesixtyra"
-        app:iconGravity="textStart" />
+        android:background="@drawable/sound_card_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_info"
+            app:tint="?attr/colorPrimary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/sound_enhance_threesixty_headphones_hint"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="?android:attr/textColorSecondary" />
+    </LinearLayout>
 
 </LinearLayout>

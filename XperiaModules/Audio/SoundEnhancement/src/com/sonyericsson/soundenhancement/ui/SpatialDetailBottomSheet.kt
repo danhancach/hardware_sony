@@ -1,16 +1,12 @@
 package com.sonyericsson.soundenhancement.ui
 
-import android.content.ComponentName
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
-import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.button.MaterialButton
 import com.sonyericsson.soundenhancement.R
 import com.sonyericsson.soundenhancement.backend.AudioConstants
 import com.sonyericsson.soundenhancement.backend.AudioModeManager
@@ -25,7 +21,6 @@ class SpatialDetailBottomSheet(
     private lateinit var modeManager: AudioModeManager
     private lateinit var spatialController: SpatialAudioController
     private lateinit var dseeController: DseeController
-
     override fun getTheme(): Int = R.style.ThemeOverlay_SoundEnhancement_BottomSheetDialog
 
     override fun onCreateDialog(savedInstanceState: Bundle?): android.app.Dialog {
@@ -50,7 +45,6 @@ class SpatialDetailBottomSheet(
         dseeController = DseeController(ctx)
 
         val radioGroup = view.findViewById<RadioGroup>(R.id.rg_upmix_mode)
-        val btnOpen360App = view.findViewById<MaterialButton>(R.id.btn_open_360_app)
 
         // Doc profile hien tai tu SpatialAudioController
         val currentProfile = spatialController.getProfile()
@@ -82,55 +76,6 @@ class SpatialDetailBottomSheet(
                 dsee = false
             )
             onProfileChanged?.invoke(profile)
-        }
-
-        btnOpen360App.setOnClickListener {
-            val launched = tryLaunchIntent(Intent("jp.co.sony.threesixtyra.settings.ACTION_UPMIX")) ||
-                    tryLaunchComponent("jp.co.sony.threesixtyra.settings", "jp.co.sony.threesixtyra.settings.settingsmenu.SettingsMenuActivity") ||
-                    tryLaunchComponent("jp.co.sony.threesixtyra.settings", "jp.co.sony.threesixtyra.settings.LauncherActivity") ||
-                    tryLaunchPackage("jp.co.sony.threesixtyra.settings")
-            if (!launched) {
-                Toast.makeText(ctx, "Khong tim thay ung dung 360 Reality Audio Settings", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun tryLaunchIntent(intent: Intent): Boolean {
-        return try {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun tryLaunchComponent(pkg: String, cls: String): Boolean {
-        return try {
-            val intent = Intent().apply {
-                component = ComponentName(pkg, cls)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(intent)
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun tryLaunchPackage(pkg: String): Boolean {
-        return try {
-            val pm = requireContext().packageManager
-            val intent = pm.getLaunchIntentForPackage(pkg)
-            if (intent != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-                true
-            } else {
-                false
-            }
-        } catch (e: Exception) {
-            false
         }
     }
 }

@@ -18,6 +18,11 @@ android_app {
     platform_apis: true,
     privileged: true,
     system_ext_specific: true,
+    overrides: [
+        "AudioFX",
+        "MusicFX",
+        "DolbySound",
+    ],
 
     static_libs: [
         "XperiaSettingsBase",

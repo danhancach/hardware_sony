@@ -1,8 +1,5 @@
 package com.sonyericsson.soundenhancement.ui
 
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -11,13 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.RadioGroup
-import android.widget.Toast
+import android.widget.TextView
 import androidx.core.view.WindowCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.slider.Slider
 import com.sonyericsson.soundenhancement.R
 import com.sonyericsson.soundenhancement.backend.AudioConstants
 import com.sonyericsson.soundenhancement.backend.AudioModeManager
@@ -91,7 +91,7 @@ internal fun configureSoundBottomSheetDialog(
     }
 }
 
-// Dialog tuy chinh chi tiet Dolby Sound theo phong cach M3 Expressive
+// Dialog tuy chinh chi tiet Dolby Sound va cac thiet lap chuyen sau theo phong cach Material 3 Expressive
 class DolbyDetailBottomSheet(
     private val onProfileChanged: ((Int) -> Unit)? = null
 ) : BottomSheetDialogFragment() {
@@ -122,9 +122,21 @@ class DolbyDetailBottomSheet(
         dolbyController = DolbyController(ctx)
 
         val radioGroup = view.findViewById<RadioGroup>(R.id.rg_dolby_profile)
-        val btnOpenDolby = view.findViewById<MaterialButton>(R.id.btn_open_dolby_app)
+        val layoutCustomControls = view.findViewById<LinearLayout>(R.id.layout_dolby_custom_controls)
+        val overlayDisabled = view.findViewById<View>(R.id.overlay_dolby_custom_disabled)
 
-        // Doc profile hien tai tu database
+        // IEQ
+        val chipGroupIeq = view.findViewById<ChipGroup>(R.id.cg_dolby_ieq)
+
+        // Dialogue Enhancer
+        val tvDeValue = view.findViewById<TextView>(R.id.tv_de_value)
+        val sliderDe = view.findViewById<Slider>(R.id.slider_de)
+
+        // GEQ
+        val btnResetGeq = view.findViewById<MaterialButton>(R.id.btn_reset_geq)
+        val dolbyGeqView = view.findViewById<DolbyGeqView>(R.id.dolby_geq_view)
+
+        // 1. Doc profile hien tai
         val currentProfile = readCurrentProfile()
         when (currentProfile) {
             DolbyController.PROFILE_MOVIE -> radioGroup.check(R.id.rb_dolby_movie)
@@ -133,6 +145,29 @@ class DolbyDetailBottomSheet(
             else -> radioGroup.check(R.id.rb_dolby_dynamic)
         }
 
+        // 2. Khoi tao trang thai cho cum dieu khien Custom
+        initIeqControls(chipGroupIeq)
+        initDialogueEnhancerControls(tvDeValue, sliderDe)
+        initGeqControls(dolbyGeqView, btnResetGeq)
+
+        // Cap nhat trang thai kich hoat/vo hieu hoa ban dau (khong animate)
+        updateCustomControlsState(
+            isCustom = (currentProfile == DolbyController.PROFILE_CUSTOM),
+            layoutCustomControls = layoutCustomControls,
+            overlayDisabled = overlayDisabled,
+            chipGroupIeq = chipGroupIeq,
+            sliderDe = sliderDe,
+            dolbyGeqView = dolbyGeqView,
+            btnResetGeq = btnResetGeq,
+            animate = false
+        )
+
+        // Khi nguoi dung cham vao cum tuy chinh luc dang bi vo hieu hoa, tu dong chon Tuy chinh
+        overlayDisabled.setOnClickListener {
+            radioGroup.check(R.id.rb_dolby_custom)
+        }
+
+        // 3. Lang nghe thay doi Profile
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val profile = when (checkedId) {
                 R.id.rb_dolby_movie -> DolbyController.PROFILE_MOVIE
@@ -140,17 +175,122 @@ class DolbyDetailBottomSheet(
                 R.id.rb_dolby_custom -> DolbyController.PROFILE_CUSTOM
                 else -> DolbyController.PROFILE_DYNAMIC
             }
+            if (dolbyController.getProfile() == profile) {
+                return@setOnCheckedChangeListener
+            }
             dolbyController.setProfile(profile)
             modeManager.setCustomProfile(AudioConstants.KEY_DB_AUDIOEFFECT_CUSTOM_DOLBY_PROFILE, profile.toString())
+
+            // Hieu ung chuyen doi trang thai kich hoat hoac vo hieu hoa cum dieu khien Custom
+            val isCustom = (profile == DolbyController.PROFILE_CUSTOM)
+            updateCustomControlsState(
+                isCustom = isCustom,
+                layoutCustomControls = layoutCustomControls,
+                overlayDisabled = overlayDisabled,
+                chipGroupIeq = chipGroupIeq,
+                sliderDe = sliderDe,
+                dolbyGeqView = dolbyGeqView,
+                btnResetGeq = btnResetGeq,
+                animate = true
+            )
+
             onProfileChanged?.invoke(profile)
         }
+    }
 
-        btnOpenDolby.setOnClickListener {
-            val launched = tryLaunchIntent(Intent(AudioConstants.ACTION_LAUNCH_DOLBY_APP)) ||
-                    tryLaunchComponent("com.dolby.daxappui2", "com.dolby.daxappui2.MainActivity")
-            if (!launched) {
-                Toast.makeText(ctx, "Khong tim thay ung dung Dolby Equalizer", Toast.LENGTH_SHORT).show()
+    private fun updateCustomControlsState(
+        isCustom: Boolean,
+        layoutCustomControls: View,
+        overlayDisabled: View,
+        chipGroupIeq: ChipGroup,
+        sliderDe: Slider,
+        dolbyGeqView: DolbyGeqView,
+        btnResetGeq: MaterialButton,
+        animate: Boolean
+    ) {
+        overlayDisabled.visibility = if (isCustom) View.GONE else View.VISIBLE
+
+        val targetAlpha = if (isCustom) 1.0f else 0.38f
+        if (animate) {
+            layoutCustomControls.animate()
+                .alpha(targetAlpha)
+                .setDuration(220)
+                .start()
+        } else {
+            layoutCustomControls.alpha = targetAlpha
+        }
+
+        chipGroupIeq.isEnabled = isCustom
+        for (i in 0 until chipGroupIeq.childCount) {
+            chipGroupIeq.getChildAt(i).isEnabled = isCustom
+        }
+        sliderDe.isEnabled = isCustom
+        dolbyGeqView.isEnabled = isCustom
+        btnResetGeq.isEnabled = isCustom
+    }
+
+    private fun initIeqControls(chipGroup: ChipGroup) {
+        val currentIeq = dolbyController.getIeqPreset()
+        when (currentIeq) {
+            DolbyController.IEQ_BRIGHT -> chipGroup.check(R.id.chip_ieq_bright)
+            DolbyController.IEQ_BALANCED -> chipGroup.check(R.id.chip_ieq_balanced)
+            DolbyController.IEQ_WARM -> chipGroup.check(R.id.chip_ieq_warm)
+            else -> chipGroup.check(R.id.chip_ieq_off)
+        }
+
+        chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            // Luon dam bao co dung mot the duoc chon; neu uncheck thi tu dong quay ve the Tat
+            if (checkedIds.isEmpty()) {
+                group.check(R.id.chip_ieq_off)
+                return@setOnCheckedStateChangeListener
             }
+            val selectedId = checkedIds.first()
+            val preset = when (selectedId) {
+                R.id.chip_ieq_bright -> DolbyController.IEQ_BRIGHT
+                R.id.chip_ieq_balanced -> DolbyController.IEQ_BALANCED
+                R.id.chip_ieq_warm -> DolbyController.IEQ_WARM
+                else -> DolbyController.IEQ_OFF
+            }
+            if (dolbyController.getIeqPreset() == preset) {
+                return@setOnCheckedStateChangeListener
+            }
+            dolbyController.setIeqPreset(preset)
+        }
+    }
+
+    private fun initDialogueEnhancerControls(tvValue: TextView, slider: Slider) {
+        val currentAmount = dolbyController.getDialogueEnhancerAmount()
+        slider.value = currentAmount.toFloat()
+        updateDeText(tvValue, currentAmount)
+
+        slider.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                val intVal = value.toInt()
+                updateDeText(tvValue, intVal)
+                dolbyController.setDialogueEnhancerAmount(intVal)
+            }
+        }
+    }
+
+    private fun updateDeText(tvValue: TextView, amount: Int) {
+        if (amount == 0) {
+            tvValue.setText(R.string.sound_enhance_dolby_de_off)
+        } else {
+            tvValue.text = getString(R.string.sound_enhance_dolby_de_level, amount)
+        }
+    }
+
+    private fun initGeqControls(geqView: DolbyGeqView, btnReset: MaterialButton) {
+        val currentGains = dolbyController.getGeqBandGains()
+        geqView.setBandGains(currentGains)
+
+        geqView.onGainsChangedListener = { newGains ->
+            dolbyController.setGeqBandGains(newGains)
+        }
+
+        btnReset.setOnClickListener {
+            geqView.resetGains()
+            dolbyController.resetGeqBandGains()
         }
     }
 
@@ -184,26 +324,8 @@ class DolbyDetailBottomSheet(
         return profile
     }
 
-    private fun tryLaunchIntent(intent: Intent): Boolean {
-        return try {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun tryLaunchComponent(pkg: String, cls: String): Boolean {
-        return try {
-            val intent = Intent().apply {
-                component = ComponentName(pkg, cls)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(intent)
-            true
-        } catch (e: Exception) {
-            false
-        }
+    override fun onDestroy() {
+        dolbyController.release()
+        super.onDestroy()
     }
 }

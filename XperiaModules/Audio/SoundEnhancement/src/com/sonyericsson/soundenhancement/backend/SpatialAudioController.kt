@@ -66,6 +66,9 @@ class SpatialAudioController(private val context: Context) {
     // Bat hoac tat 360 Upmix headphone va dong bo voi SystemMainService
     fun setEnabled(enabled: Boolean, profile: Int = getProfile()) {
         val targetProfile = if (profile in 1..3) profile else getProfile()
+        if (isEnabled() == enabled && getProfile() == targetProfile) {
+            return
+        }
         prefs.edit().putInt(KEY_CACHED_UPMIX_PROFILE, targetProfile).apply()
 
         // 1. Cap nhat AudioFlinger parameters truc tiep

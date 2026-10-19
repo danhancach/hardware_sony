@@ -44,9 +44,18 @@
     <string name="sound_enhance_wind_nr_title">Giảm tiếng ồn của gió</string>
     <string name="sound_enhance_wind_nr_summary">Giảm tạp âm gió vào micrô khi ghi âm hoặc quay video</string>
 
-    <string name="sound_enhance_open_dolby_app">Bộ cân bằng Dolby Audio</string>
-    <string name="sound_enhance_open_dolby_app_summary">Tinh chỉnh dải tần đồ họa và các cài đặt nâng cao</string>
-    <string name="sound_enhance_open_360_app">Cài đặt 360 Reality Audio</string>
+    <string name="sound_enhance_threesixty_headphones_hint">360 Upmix hoạt động khi kết nối tai nghe (có dây hoặc Bluetooth).</string>
+    <string name="sound_enhance_dolby_custom_section_title">Tùy chỉnh chi tiết</string>
+    <string name="sound_enhance_dolby_ieq_title">Bộ cân bằng thông minh</string>
+    <string name="sound_enhance_dolby_ieq_off">Tắt</string>
+    <string name="sound_enhance_dolby_ieq_bright">Sáng rõ</string>
+    <string name="sound_enhance_dolby_ieq_balanced">Cân bằng</string>
+    <string name="sound_enhance_dolby_ieq_warm">Ấm áp</string>
+    <string name="sound_enhance_dolby_de_title">Tăng cường giọng thoại</string>
+    <string name="sound_enhance_dolby_de_off">Tắt</string>
+    <string name="sound_enhance_dolby_de_level">Mức %1$d</string>
+    <string name="sound_enhance_dolby_geq_title">Bộ cân bằng đồ họa</string>
+    <string name="sound_enhance_dolby_geq_reset">Đặt lại</string>
 
     <!-- Profiles -->
     <string name="sound_enhance_profile_dynamic">Sống động</string>

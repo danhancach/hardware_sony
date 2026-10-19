@@ -27,6 +27,9 @@ class DseeController(context: Context) {
 
     // Bat hoac tat DSEE
     fun setEnabled(enabled: Boolean) {
+        if (isEnabled() == enabled) {
+            return
+        }
         val stateStr = if (enabled) "1" else "0"
         audioManager.setParameters("${AudioConstants.PARAM_DSEE_HX_STATE}=$stateStr")
     }

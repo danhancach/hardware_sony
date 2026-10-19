@@ -44,9 +44,18 @@
     <string name="sound_enhance_wind_nr_title">Wind noise reduction</string>
     <string name="sound_enhance_wind_nr_summary">Reduces microphone wind noise when recording audio or video</string>
 
-    <string name="sound_enhance_open_dolby_app">Dolby Audio Equalizer</string>
-    <string name="sound_enhance_open_dolby_app_summary">Fine-tune graphics equalizer and intelligent equalizer presets</string>
-    <string name="sound_enhance_open_360_app">360 Reality Audio settings</string>
+    <string name="sound_enhance_threesixty_headphones_hint">360 Upmix is active when headphones are connected (wired or Bluetooth).</string>
+    <string name="sound_enhance_dolby_custom_section_title">Custom settings</string>
+    <string name="sound_enhance_dolby_ieq_title">Intelligent Equalizer</string>
+    <string name="sound_enhance_dolby_ieq_off">Off</string>
+    <string name="sound_enhance_dolby_ieq_bright">Bright</string>
+    <string name="sound_enhance_dolby_ieq_balanced">Balanced</string>
+    <string name="sound_enhance_dolby_ieq_warm">Warm</string>
+    <string name="sound_enhance_dolby_de_title">Dialogue Enhancer</string>
+    <string name="sound_enhance_dolby_de_off">Off</string>
+    <string name="sound_enhance_dolby_de_level">Level %1$d</string>
+    <string name="sound_enhance_dolby_geq_title">Graphic Equalizer</string>
+    <string name="sound_enhance_dolby_geq_reset">Reset</string>
 
     <!-- Profiles -->
     <string name="sound_enhance_profile_dynamic">Dynamic</string>

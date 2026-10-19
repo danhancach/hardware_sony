@@ -3,88 +3,256 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/Theme.SoundEnhancement.Content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/sound_dialog_bg"
-    android:orientation="vertical"
-    android:paddingStart="24dp"
-    android:paddingTop="16dp"
-    android:paddingEnd="24dp"
-    android:paddingBottom="28dp">
+    android:orientation="vertical">
 
-    <!-- Thanh keo Drag Handle -->
-    <View
-        android:layout_width="32dp"
-        android:layout_height="4dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:background="?attr/colorOutlineVariant" />
-
-    <TextView
+    <!-- Header co dinh: Drag Handle + Tieu de chinh + Mo ta -->
+    <LinearLayout
+        android:id="@+id/header_dolby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sound_enhance_dolby_dialog_title"
-        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="8dp">
 
-    <TextView
+        <!-- Thanh keo Drag Handle -->
+        <View
+            android:layout_width="32dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="?attr/colorOutlineVariant" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_enhance_dolby_dialog_title"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/sound_enhance_dolby_dialog_summary"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="?android:attr/textColorSecondary" />
+
+    </LinearLayout>
+
+    <!-- Vung noi dung cuon rieng biet ben duoi header -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_dolby_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/sound_enhance_dolby_dialog_summary"
-        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-        android:textColor="?android:attr/textColorSecondary" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="ifContentScrolls">
 
-    <!-- RadioGroup chon Profile Dolby -->
-    <RadioGroup
-        android:id="@+id/rg_dolby_profile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/rb_dolby_dynamic"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/sound_enhance_profile_dynamic"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="48dp">
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/rb_dolby_movie"
+            <!-- RadioGroup chon Profile Dolby -->
+            <RadioGroup
+                android:id="@+id/rg_dolby_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/sound_enhance_profile_movie"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+            android:orientation="vertical">
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/rb_dolby_music"
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/rb_dolby_dynamic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/sound_enhance_profile_dynamic"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/rb_dolby_movie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/sound_enhance_profile_movie"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/rb_dolby_music"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/sound_enhance_profile_music"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/rb_dolby_custom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/sound_enhance_profile_custom"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+        </RadioGroup>
+
+        <!-- Khung chua cum dieu khien Custom kem overlay khi bi vo hieu hoa -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/sound_enhance_profile_music"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+            android:layout_marginTop="16dp">
 
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/rb_dolby_custom"
+            <!-- Khung dieu khien nang cao cho Profile Custom -->
+            <LinearLayout
+                android:id="@+id/layout_dolby_custom_controls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="?attr/colorOutlineVariant" />
+
+                <!-- Muc 1: Bo can bang thong minh (IEQ) -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_enhance_dolby_ieq_title"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textColor="?android:attr/textColorPrimary" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:overScrollMode="never"
+                    android:scrollbars="none">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cg_dolby_ieq"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:selectionRequired="true"
+                        app:singleLine="true"
+                        app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_ieq_off"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sound_enhance_dolby_ieq_off" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_ieq_bright"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sound_enhance_dolby_ieq_bright" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_ieq_balanced"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sound_enhance_dolby_ieq_balanced" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_ieq_warm"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sound_enhance_dolby_ieq_warm" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <!-- Muc 2: Tang cuong giong thoai (Dialogue Enhancer) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sound_enhance_dolby_de_title"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textColor="?android:attr/textColorPrimary" />
+
+                <TextView
+                    android:id="@+id/tv_de_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_enhance_dolby_de_off"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                    android:textColor="?attr/colorPrimary" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/slider_de"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:stepSize="1.0"
+                android:valueFrom="0.0"
+                android:valueTo="6.0" />
+
+            <!-- Muc 3: Bo can bang do hoa (Graphic Equalizer - 10 dai tan) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sound_enhance_dolby_geq_title"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textColor="?android:attr/textColorPrimary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reset_geq"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_enhance_dolby_geq_reset" />
+            </LinearLayout>
+
+            <com.sonyericsson.soundenhancement.ui.DolbyGeqView
+                android:id="@+id/dolby_geq_view"
+                android:layout_width="match_parent"
+                android:layout_height="195dp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Lop overlay bat touch khi o profile khong phai Custom -->
+        <View
+            android:id="@+id/overlay_dolby_custom_disabled"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/sound_enhance_profile_custom"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
-    </RadioGroup>
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
 
-    <!-- Nut mo ung dung Bo can bang Dolby Equalizer -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_open_dolby_app"
-        style="@style/Widget.Material3.Button.TonalButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/sound_enhance_open_dolby_app"
-        app:icon="@drawable/ic_tune"
-        app:iconGravity="textStart" />
+    </FrameLayout>
 
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
 </LinearLayout>
