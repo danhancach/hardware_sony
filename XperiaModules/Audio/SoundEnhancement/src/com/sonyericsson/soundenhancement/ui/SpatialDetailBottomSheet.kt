@@ -10,6 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sonyericsson.soundenhancement.R
 import com.sonyericsson.soundenhancement.backend.AudioConstants
 import com.sonyericsson.soundenhancement.backend.AudioModeManager
+import com.sonyericsson.soundenhancement.backend.AudioModeTransition
 import com.sonyericsson.soundenhancement.backend.DseeController
 import com.sonyericsson.soundenhancement.backend.SpatialAudioController
 
@@ -21,6 +22,8 @@ class SpatialDetailBottomSheet(
     private lateinit var modeManager: AudioModeManager
     private lateinit var spatialController: SpatialAudioController
     private lateinit var dseeController: DseeController
+    private val modeTransition = AudioModeTransition()
+
     override fun getTheme(): Int = R.style.ThemeOverlay_SoundEnhancement_BottomSheetDialog
 
     override fun onCreateDialog(savedInstanceState: Bundle?): android.app.Dialog {
@@ -61,21 +64,27 @@ class SpatialDetailBottomSheet(
                 else -> SpatialAudioController.UPMIX_PROFILE_AUTO
             }
 
-            // Kich hoat 360 Upmix voi profile da chon
-            spatialController.setEnabled(true, profile)
+            // Neu da bat va cung profile thi bo qua de tranh tieng pop
+            if (spatialController.isEnabled() && spatialController.getProfile() == profile) {
+                return@setOnCheckedChangeListener
+            }
 
-            // Theo logic stock: 360 va DSEE chi hoat dong cung luc mot mode, bat 360 phai tat DSEE
+            // Chuyen doi tuan tu em ai: Tat DSEE truoc de AudioFlinger dong DIRECT stream
             if (dseeController.isEnabled()) {
                 dseeController.setEnabled(false)
             }
 
-            modeManager.setCustomProfile(AudioConstants.KEY_DB_AUDIOEFFECT_CUSTOM_UPMIX_PROFILE, profile.toString())
-            modeManager.setCustomEffect(
-                dolby = modeManager.getCustomProfile(AudioConstants.KEY_DB_AUDIOEFFECT_CUSTOM_EFFECT, "").contains("dolby"),
-                upmix = true,
-                dsee = false
-            )
-            onProfileChanged?.invoke(profile)
+            // Kich hoat 360 Upmix voi profile da chon sau khi DSEE da ngat
+            modeTransition.schedule {
+                spatialController.setEnabled(true, profile)
+                modeManager.setCustomProfile(AudioConstants.KEY_DB_AUDIOEFFECT_CUSTOM_UPMIX_PROFILE, profile.toString())
+                modeManager.setCustomEffect(
+                    dolby = modeManager.getCustomProfile(AudioConstants.KEY_DB_AUDIOEFFECT_CUSTOM_EFFECT, "").contains("dolby"),
+                    upmix = true,
+                    dsee = false
+                )
+                onProfileChanged?.invoke(profile)
+            }
         }
     }
 }

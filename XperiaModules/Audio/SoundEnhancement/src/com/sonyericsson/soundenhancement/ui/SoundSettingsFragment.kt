@@ -21,6 +21,7 @@ import com.google.android.material.materialswitch.MaterialSwitch
 import com.sonyericsson.soundenhancement.R
 import com.sonyericsson.soundenhancement.backend.AudioConstants
 import com.sonyericsson.soundenhancement.backend.AudioModeManager
+import com.sonyericsson.soundenhancement.backend.AudioModeTransition
 import com.sonyericsson.soundenhancement.backend.DolbyController
 import com.sonyericsson.soundenhancement.backend.DseeController
 import com.sonyericsson.soundenhancement.backend.EffectPriorityManager
@@ -39,6 +40,7 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
     private lateinit var spatialController: SpatialAudioController
     private lateinit var windController: WindNoiseController
     private lateinit var priorityManager: EffectPriorityManager
+    private val modeTransition = AudioModeTransition()
 
     // Views Hero Card
     private lateinit var imgIllustration: ImageView
@@ -233,14 +235,23 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
             if (isCurrentModeCustom()) {
                 val newState = !switchDsee.isChecked
                 switchDsee.isChecked = newState
-                dseeController.setEnabled(newState)
-                // Logic loai tru: bat DSEE thi phai tat 360 Upmix giong behavior stock
-                if (newState && switchThreesixty.isChecked) {
-                    switchThreesixty.isChecked = false
-                    spatialController.setEnabled(false)
+                if (newState) {
+                    // Logic loai tru: bat DSEE thi phai tat 360 Upmix truoc
+                    if (switchThreesixty.isChecked) {
+                        switchThreesixty.isChecked = false
+                        spatialController.setEnabled(false)
+                    }
+                    // Cho route cu xoa buffer truoc khi mo DIRECT DSEE
+                    modeTransition.schedule {
+                        dseeController.setEnabled(true)
+                        saveCurrentAsCustomSettings()
+                        updateUiState()
+                    }
+                } else {
+                    dseeController.setEnabled(false)
+                    saveCurrentAsCustomSettings()
+                    updateUiState()
                 }
-                saveCurrentAsCustomSettings()
-                updateUiState()
             } else {
                 showManagedByRecommendToast()
             }
@@ -262,14 +273,23 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
             if (isCurrentModeCustom()) {
                 val newState = !switchThreesixty.isChecked
                 switchThreesixty.isChecked = newState
-                spatialController.setEnabled(newState)
-                // Logic loai tru: bat 360 Upmix thi phai tat DSEE giong behavior stock
-                if (newState && switchDsee.isChecked) {
-                    switchDsee.isChecked = false
-                    dseeController.setEnabled(false)
+                if (newState) {
+                    // Logic loai tru: bat 360 Upmix thi phai tat DSEE truoc de AudioFlinger dong DIRECT route
+                    if (switchDsee.isChecked) {
+                        switchDsee.isChecked = false
+                        dseeController.setEnabled(false)
+                    }
+                    // Cho AudioFlinger dong DIRECT route roi moi bat 360
+                    modeTransition.schedule {
+                        spatialController.setEnabled(true)
+                        saveCurrentAsCustomSettings()
+                        updateUiState()
+                    }
+                } else {
+                    spatialController.setEnabled(false)
+                    saveCurrentAsCustomSettings()
+                    updateUiState()
                 }
-                saveCurrentAsCustomSettings()
-                updateUiState()
             } else {
                 showManagedByRecommendToast()
             }
@@ -336,7 +356,7 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
         updateHeroIllustration(AudioConstants.MODE_CUSTOM)
     }
 
-    // Khoi phuc chinh xac cac cai dat tuy chinh ma nguoi dung da thiet lap truoc do
+    // Khoi phuc chinh xac cac cai dat tuy chinh ma nguoi dung da thiet lap truoc do voi trinh tu em ai
     private fun restoreCustomSettings() {
         val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val savedDolby = prefs.getBoolean("custom_saved_dolby", true)
@@ -351,20 +371,42 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
             SpatialAudioController.UPMIX_PROFILE_AUTO,
         )
 
-        // 1. Khoi phuc Dolby
-        dolbyController.setEnabled(savedDolby)
-        dolbyController.setProfile(savedDolbyProfile)
+        // 1. Khoi phuc Dolby neu co su thay doi
+        if (dolbyController.getProfile() != savedDolbyProfile) {
+            dolbyController.setProfile(savedDolbyProfile)
+        }
+        if (dolbyController.isEnabled() != savedDolby) {
+            dolbyController.setEnabled(savedDolby)
+        }
 
-        // 2. Khoi phuc DSEE va 360 Upmix theo quy tac loai tru
+        // 2. Chuyen doi tuan tu em ai giua DSEE va 360 Upmix de tranh xung dot route DIRECT va DSP
         if (savedSpatial) {
-            spatialController.setEnabled(true, savedSpatialProfile)
-            dseeController.setEnabled(false)
+            if (dseeController.isEnabled()) {
+                dseeController.setEnabled(false)
+            }
+            modeTransition.schedule {
+                if (!spatialController.isEnabled() || spatialController.getProfile() != savedSpatialProfile) {
+                    spatialController.setEnabled(true, savedSpatialProfile)
+                }
+                updateUiState()
+            }
         } else if (savedDsee) {
-            spatialController.setEnabled(false)
-            dseeController.setEnabled(true)
+            if (spatialController.isEnabled()) {
+                spatialController.setEnabled(false)
+            }
+            modeTransition.schedule {
+                if (!dseeController.isEnabled()) {
+                    dseeController.setEnabled(true)
+                }
+                updateUiState()
+            }
         } else {
-            spatialController.setEnabled(false)
-            dseeController.setEnabled(false)
+            if (spatialController.isEnabled()) {
+                spatialController.setEnabled(false)
+            }
+            if (dseeController.isEnabled()) {
+                dseeController.setEnabled(false)
+            }
         }
 
         // 3. Dong bo lai DB custom effect
@@ -376,6 +418,12 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
     }
 
     private fun applyMode(mode: String) {
+        val currentMode = modeManager.getAudioEffectMode()
+        // Neu che do nay da dang duoc kich hoat, khong re-apply de tranh lam dut doan DSP audio gay tieng pop
+        if (mode == currentMode) {
+            return
+        }
+
         if (mode == AudioConstants.MODE_CUSTOM) {
             modeManager.setAudioEffectMode(mode)
             restoreCustomSettings()
@@ -383,10 +431,20 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
             // Luu lai cai dat tuy chinh truoc khi he thong de xuat ghi de
             saveCurrentAsCustomSettings()
             modeManager.setAudioEffectMode(mode)
-            // Khi o che do De xuat, he thong mac dinh toi uu hoa tu dong (Dolby + DSEE, tat 360)
-            dolbyController.setEnabled(true)
-            dseeController.setEnabled(true)
-            spatialController.setEnabled(false)
+            // Chuyen doi tuan tu em ai: Tat 360 truoc de tranh xung dot voi DSEE
+            if (spatialController.isEnabled()) {
+                spatialController.setEnabled(false)
+            }
+            // Bat Dolby truoc, sau do moi mo DSEE de tranh hai route doi dau dong thoi
+            modeTransition.scheduleSequence(
+                first = {
+                    if (!dolbyController.isEnabled()) dolbyController.setEnabled(true)
+                },
+                second = {
+                    if (!dseeController.isEnabled()) dseeController.setEnabled(true)
+                    updateUiState()
+                },
+            )
         }
         updateUiState()
     }

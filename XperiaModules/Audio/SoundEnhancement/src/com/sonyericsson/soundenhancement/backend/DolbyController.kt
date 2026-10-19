@@ -61,6 +61,22 @@ class DolbyController(private val context: Context) {
         private const val KEY_CUSTOM_GEQ_10 = "custom_geq_10_bands"
     }
 
+    // Shared AudioEffect session 0 duoc tai su dung de tranh lien tuc bind/unbind effect chain gay pop
+    private var sharedEffect: AudioEffect? = null
+
+    @Synchronized
+    private fun getOrCreateEffect(): AudioEffect? {
+        if (sharedEffect == null) {
+            try {
+                sharedEffect = object : AudioEffect(EFFECT_TYPE_NULL, EFFECT_TYPE_DAP, 0, 0) {}
+            } catch (e: Exception) {
+                Log.w(AudioConstants.TAG, "Khong the khoi tao shared AudioEffect session 0: $e")
+                sharedEffect = null
+            }
+        }
+        return sharedEffect
+    }
+
     // Chuyen doi tham so bool sang byte array cho AudioEffect.setParameter(5, ...)
     private fun setBoolParam(effect: AudioEffect, paramId: Int, value: Boolean): Boolean {
         return try {
@@ -138,24 +154,21 @@ class DolbyController(private val context: Context) {
         // 2. Gui broadcast DAP_PARAMS_UPDATE cho DaxService
         sendDapUpdateBroadcast(EVENT_DS_STATE_CHANGE, intVal)
 
-        // 3. Tac dong AudioEffect DSP session 0
+        // 3. Tac dong AudioEffect DSP session 0 qua sharedEffect
         try {
-            val effect = object : AudioEffect(EFFECT_TYPE_NULL, EFFECT_TYPE_DAP, 0, 0) {}
-            try {
+            val effect = getOrCreateEffect()
+            if (effect != null) {
                 setBoolParam(effect, DS_PARAM_DS_ON, enabled)
                 effect.enabled = enabled
-            } finally {
-                effect.release()
             }
         } catch (e: Exception) {
             Log.w(AudioConstants.TAG, "Loi khi bat/tat AudioEffect truc tiep: $e")
+            sharedEffect = null
         }
 
-        // 4. Dong bo tham so qua AudioManager parameters
+        // 4. Dong bo tham so qua AudioManager parameters gop mot lan de tranh ngat quang DSP
         val stateStr = intVal.toString()
-        audioManager.setParameters("${AudioConstants.PARAM_DOLBY_DAP_ENABLE}=$stateStr")
-        audioManager.setParameters("${AudioConstants.PARAM_DOLBY_DEC_EXIST}=$stateStr")
-        audioManager.setParameters("dle_ds_state=$enabled")
+        audioManager.setParameters("${AudioConstants.PARAM_DOLBY_DAP_ENABLE}=$stateStr;${AudioConstants.PARAM_DOLBY_DEC_EXIST}=$stateStr;dle_ds_state=$enabled")
 
         // Neu bat lai va dang o Profile Custom, ap dung lai cac tham so chi tiet
         if (enabled && getProfile() == PROFILE_CUSTOM) {
@@ -186,18 +199,16 @@ class DolbyController(private val context: Context) {
         sendDapUpdateBroadcast(EVENT_PROFILE_CHANGE, profile)
 
         try {
-            val effect = object : AudioEffect(EFFECT_TYPE_NULL, EFFECT_TYPE_DAP, 0, 0) {}
-            try {
+            val effect = getOrCreateEffect()
+            if (effect != null) {
                 setIntParam(effect, DS_PARAM_PROFILE, profile)
-            } finally {
-                effect.release()
             }
         } catch (e: Exception) {
             Log.w(AudioConstants.TAG, "Loi khi dat int param profile: $e")
+            sharedEffect = null
         }
 
-        audioManager.setParameters("dolby_profile=$profile")
-        audioManager.setParameters("dle_profile=$profile")
+        audioManager.setParameters("dolby_profile=$profile;dle_profile=$profile")
 
         // Neu chon Custom, ap dung toan bo thiet lap do nguoi dung tinh chinh
         if (profile == PROFILE_CUSTOM) {
@@ -216,17 +227,19 @@ class DolbyController(private val context: Context) {
 
     // Cai dat IEQ preset
     fun setIeqPreset(preset: Int) {
+        if (getIeqPreset() == preset) {
+            return
+        }
         prefs.edit().putInt(KEY_CUSTOM_IEQ, preset).apply()
 
         try {
-            val effect = object : AudioEffect(EFFECT_TYPE_NULL, EFFECT_TYPE_DAP, 0, 0) {}
-            try {
+            val effect = getOrCreateEffect()
+            if (effect != null) {
                 setDapParameter(effect, PROFILE_CUSTOM, PARAM_IEQ_PRESET, intArrayOf(preset))
-            } finally {
-                effect.release()
             }
         } catch (e: Exception) {
             Log.w(AudioConstants.TAG, "Loi khi setIeqPreset qua AudioEffect: $e")
+            sharedEffect = null
         }
 
         audioManager.setParameters("dle_ieq_preset=$preset")
@@ -240,19 +253,21 @@ class DolbyController(private val context: Context) {
     // Cai dat Dialogue Enhancer (0 = tat, 1..6 = muc do)
     fun setDialogueEnhancerAmount(amount: Int) {
         val clamped = amount.coerceIn(0, 6)
+        if (getDialogueEnhancerAmount() == clamped) {
+            return
+        }
         prefs.edit().putInt(KEY_CUSTOM_DE, clamped).apply()
 
         val isEnabled = clamped > 0
         try {
-            val effect = object : AudioEffect(EFFECT_TYPE_NULL, EFFECT_TYPE_DAP, 0, 0) {}
-            try {
+            val effect = getOrCreateEffect()
+            if (effect != null) {
                 setDapParameter(effect, PROFILE_CUSTOM, PARAM_DE_ENABLE, intArrayOf(if (isEnabled) 1 else 0))
                 setDapParameter(effect, PROFILE_CUSTOM, PARAM_DE_AMOUNT, intArrayOf(clamped))
-            } finally {
-                effect.release()
             }
         } catch (e: Exception) {
             Log.w(AudioConstants.TAG, "Loi khi setDialogueEnhancerAmount qua AudioEffect: $e")
+            sharedEffect = null
         }
 
         audioManager.setParameters("dle_den_amount=$clamped")
@@ -273,10 +288,18 @@ class DolbyController(private val context: Context) {
 
     // Cai dat mang do loi 10 dai tan va tinh toan mang 20 diem noi suy chuan Dolby
     fun setGeqBandGains(gains: FloatArray) {
+        val currentGains = getGeqBandGains()
+        var hasChanged = false
         val size = minOf(gains.size, 10)
         val clamped10 = FloatArray(10) { 0.0f }
         for (i in 0 until size) {
             clamped10[i] = gains[i].coerceIn(-5.0f, 5.0f)
+            if (kotlin.math.abs(clamped10[i] - currentGains[i]) > 0.05f) {
+                hasChanged = true
+            }
+        }
+        if (!hasChanged) {
+            return
         }
 
         // Luu lai vao SharedPreferences duoi dang chuoi CSV
@@ -291,15 +314,14 @@ class DolbyController(private val context: Context) {
         val dap20 = calculateDapGeq20(clamped10)
 
         try {
-            val effect = object : AudioEffect(EFFECT_TYPE_NULL, EFFECT_TYPE_DAP, 0, 0) {}
-            try {
+            val effect = getOrCreateEffect()
+            if (effect != null) {
                 setDapParameter(effect, PROFILE_CUSTOM, PARAM_GEQ_ENABLE, intArrayOf(1))
                 setDapParameter(effect, PROFILE_CUSTOM, PARAM_GEQ_BAND_GAINS, dap20)
-            } finally {
-                effect.release()
             }
         } catch (e: Exception) {
             Log.w(AudioConstants.TAG, "Loi khi setGeqBandGains qua AudioEffect: $e")
+            sharedEffect = null
         }
 
         // Dong bo voi HAL Sony bang chuoi JSON array
@@ -363,7 +385,14 @@ class DolbyController(private val context: Context) {
         }
     }
 
+    @Synchronized
     fun release() {
-        // Khong giu AudioEffect instance lau dai nen khong can release gi them
+        try {
+            sharedEffect?.release()
+        } catch (e: Exception) {
+            Log.w(AudioConstants.TAG, "Loi khi release shared AudioEffect: $e")
+        } finally {
+            sharedEffect = null
+        }
     }
 }
