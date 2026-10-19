@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 Expressive dimen tokens chot theo skill material-ui-expressive -->
+    <dimen name="sound_preference_corner_radius">20dp</dimen>
+    <dimen name="sound_preference_corner_inner">4dp</dimen>
+    <dimen name="sound_preference_card_gap">2dp</dimen>
+    <dimen name="sound_preference_card_margin_horizontal">16dp</dimen>
+    <dimen name="sound_preference_row_min_height">72dp</dimen>
+    <dimen name="sound_preference_row_padding_horizontal">16dp</dimen>
+    <dimen name="sound_preference_row_padding_vertical">16dp</dimen>
+    <dimen name="sound_preference_icon_size">40dp</dimen>
+    <dimen name="sound_preference_icon_margin_end">12dp</dimen>
+    <dimen name="sound_dialog_corner_radius">28dp</dimen>
+</resources>

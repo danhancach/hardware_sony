@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Theme.SoundEnhancement.Content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- The 3: 360 Upmix [360 Upmix > | toggle] -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_threesixty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sound_preference_card_margin_horizontal"
+        android:layout_marginEnd="@dimen/sound_preference_card_margin_horizontal"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="@dimen/sound_preference_corner_radius"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/sound_card_background"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:id="@+id/row_threesixty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/sound_preference_row_min_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Vung mo chi tiet ben trai: Icon + Text + Chevron > -->
+            <LinearLayout
+                android:id="@+id/btn_threesixty_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="@dimen/sound_preference_row_padding_horizontal"
+                android:paddingEnd="8dp"
+                android:paddingTop="@dimen/sound_preference_row_padding_vertical"
+                android:paddingBottom="@dimen/sound_preference_row_padding_vertical">
+
+                <FrameLayout
+                    android:layout_width="@dimen/sound_preference_icon_size"
+                    android:layout_height="@dimen/sound_preference_icon_size"
+                    android:layout_marginEnd="@dimen/sound_preference_icon_margin_end">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_threesixtyupmix" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextAppearance.SoundEnhancement.RowTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sound_enhance_threesixty_title" />
+
+                    <TextView
+                        android:id="@+id/tv_threesixty_summary"
+                        style="@style/TextAppearance.SoundEnhancement.RowSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/sound_enhance_threesixty_summary" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ic_threesixty_chevron"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:src="@drawable/ic_expand_chevron"
+                    app:tint="?attr/colorOnSurfaceVariant" />
+
+            </LinearLayout>
+
+            <!-- Divider doc -->
+            <View
+                android:id="@+id/divider_threesixty_vertical"
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/sound_divider_color" />
+
+            <FrameLayout
+                android:id="@+id/btn_threesixty_toggle_area"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minHeight="@dimen/sound_preference_row_min_height"
+                android:paddingStart="12dp"
+                android:paddingEnd="@dimen/sound_preference_row_padding_horizontal"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switch_threesixty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="false"
+                    android:focusable="false" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

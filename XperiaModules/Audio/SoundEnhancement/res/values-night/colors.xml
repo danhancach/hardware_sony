@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mau sac giao dien che do toi Dark theo token he thong -->
+    <color name="sound_card_background">@android:color/system_surface_bright_dark</color>
+    <color name="sound_divider_color">@android:color/system_outline_variant_dark</color>
+</resources>

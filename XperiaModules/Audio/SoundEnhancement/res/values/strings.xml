@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sound_enhance_app_name">Sound Enhancement</string>
+    <string name="sound_enhance_audio_settings_title">Audio settings</string>
+    <string name="sound_enhance_audio_settings_summary">Dolby Sound, DSEE Ultimate, 360 Reality Audio</string>
+
+    <string name="sound_enhance_playback_title">Playback quality</string>
+    <string name="sound_enhance_playback_summary">Enhance media sound and headphone playback</string>
+
+    <!-- Main 2-mode selection -->
+    <string name="sound_enhance_mode_recommended">Recommended</string>
+    <string name="sound_enhance_mode_recommended_title">Recommended mode</string>
+    <string name="sound_enhance_mode_recommended_desc">Automatically optimizes audio effects based on playback content. Individual settings below are managed by the system.</string>
+    <string name="sound_enhance_mode_recommended_summary">@string/sound_enhance_mode_recommended_desc</string>
+
+    <string name="sound_enhance_mode_custom">Custom</string>
+    <string name="sound_enhance_mode_custom_title">Custom mode</string>
+    <string name="sound_enhance_mode_custom_desc">Manually configure and fine-tune Dolby Sound, DSEE Ultimate, and 360 Upmix according to your preferences.</string>
+    <string name="sound_enhance_mode_custom_summary">@string/sound_enhance_mode_custom_desc</string>
+
+    <string name="sound_enhance_managed_by_recommend">Automatically managed by Recommended mode</string>
+    <string name="sound_enhance_badge_manual">MANUAL</string>
+
+    <string name="sound_enhance_category_features">Audio features</string>
+    <string name="sound_enhance_category_recording">Recording quality</string>
+
+    <string name="sound_enhance_dolby_title">Dolby Sound</string>
+    <string name="sound_enhance_dolby_summary">Immersive, cinematic sound with clear dialogue and rich bass</string>
+    <string name="sound_enhance_dolby_dialog_title">Dolby Sound settings</string>
+    <string name="sound_enhance_dolby_dialog_summary">Select the sound profile that best fits your entertainment</string>
+
+    <string name="sound_enhance_dsee_title">DSEE Ultimate</string>
+    <string name="sound_enhance_dsee_summary">Uses AI to upscale compressed audio into high-resolution sound in real time</string>
+
+    <string name="sound_enhance_threesixty_title">360 Upmix</string>
+    <string name="sound_enhance_threesixty_summary">Upmixes 2-channel stereo into a multi-channel 3D sound field (headphones only)</string>
+    <string name="sound_enhance_threesixty_dialog_title">360 Upmix settings</string>
+    <string name="sound_enhance_threesixty_dialog_summary">Choose your preferred spatial upmix mode</string>
+
+    <string name="sound_enhance_effect_priority_title">Effect priority</string>
+    <string name="sound_enhance_effect_priority_summary">Prioritize 360 Upmix or DSEE Ultimate over Dolby Sound for selected apps</string>
+    <string name="sound_enhance_effect_priority_instruction">The effect you turned on (either 360 Upmix or DSEE Ultimate) takes priority over Dolby Sound for the media sound of the apps registered here.</string>
+
+    <string name="sound_enhance_wind_nr_title">Wind noise reduction</string>
+    <string name="sound_enhance_wind_nr_summary">Reduces microphone wind noise when recording audio or video</string>
+
+    <string name="sound_enhance_open_dolby_app">Dolby Audio Equalizer</string>
+    <string name="sound_enhance_open_dolby_app_summary">Fine-tune graphics equalizer and intelligent equalizer presets</string>
+    <string name="sound_enhance_open_360_app">360 Reality Audio settings</string>
+
+    <!-- Profiles -->
+    <string name="sound_enhance_profile_dynamic">Dynamic</string>
+    <string name="sound_enhance_profile_movie">Movie</string>
+    <string name="sound_enhance_profile_music">Music</string>
+    <string name="sound_enhance_profile_custom">Custom</string>
+
+    <string name="sound_enhance_upmix_auto">Auto</string>
+    <string name="sound_enhance_upmix_cinema">Cinema</string>
+    <string name="sound_enhance_upmix_music">Music</string>
+
+    <!-- Effect Priority -->
+    <string name="sound_enhance_priority_apps_count">%1$d apps registered</string>
+    <string name="sound_enhance_priority_search_hint">Search apps…</string>
+    <string name="sound_enhance_priority_preset_header">Preset supported apps</string>
+    <string name="sound_enhance_priority_user_header">User added apps</string>
+    <string name="sound_enhance_priority_empty">No matching apps found</string>
+
+    <string name="sound_enhance_active_badge">AUTO ACTIVE</string>
+    <string name="sound_enhance_status_off">Off</string>
+    <string name="sound_enhance_status_on">On</string>
+
+    <!-- Legacy Sony and System Settings compatibility aliases -->
+    <string name="sound_enhance_strings_app_name_txt">@string/sound_enhance_app_name</string>
+    <string name="sound_enhance_strings_audio_settings_txt">@string/sound_enhance_audio_settings_title</string>
+    <string name="sound_enhance_strings_audio_settings_description_txt">@string/sound_enhance_audio_settings_summary</string>
+    <string name="sound_enhance_strings_playback_quality_settings_title_txt">@string/sound_enhance_playback_title</string>
+    <string name="sound_enhance_strings_playback_quality_settings_summary_txt">@string/sound_enhance_playback_summary</string>
+    <string name="sound_enhance_strings_recording_quality_settings_title_txt">@string/sound_enhance_wind_nr_title</string>
+    <string name="sound_enhance_strings_recording_quality_settings_summary_txt">@string/sound_enhance_wind_nr_summary</string>
+    <string name="audio_settings_white_list_title_txt">@string/sound_enhance_effect_priority_title</string>
+    <string name="sound_enhance_strings_dolby_sound_txt">@string/sound_enhance_dolby_title</string>
+    <string name="sound_enhance_strings_dolby_sound_summary_txt">@string/sound_enhance_dolby_summary</string>
+    <string name="sound_enhance_strings_setting_dsee_ultimate_txt">@string/sound_enhance_dsee_title</string>
+    <string name="sound_enhance_strings_setting_dsee_ultimate_summary_txt">@string/sound_enhance_dsee_summary</string>
+    <string name="sound_enhance_strings_upmix_txt">@string/sound_enhance_threesixty_title</string>
+    <string name="sound_enhance_strings_upmix_summary_txt">@string/sound_enhance_threesixty_summary</string>
+    <string name="sound_enhance_strings_setting_wind_noise_reduction_txt">@string/sound_enhance_wind_nr_title</string>
+    <string name="sound_enhance_strings_setting_wind_noise_reduction_summary_txt">@string/sound_enhance_wind_nr_summary</string>
+</resources>

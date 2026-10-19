@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_app_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/sound_preference_row_min_height"
+    android:background="@drawable/sound_preference_bg_single"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/sound_preference_row_padding_horizontal"
+    android:paddingEnd="@dimen/sound_preference_row_padding_horizontal"
+    android:layout_marginBottom="2dp">
+
+    <ImageView
+        android:id="@+id/img_app_icon"
+        android:layout_width="@dimen/sound_preference_icon_size"
+        android:layout_height="@dimen/sound_preference_icon_size"
+        android:layout_marginEnd="@dimen/sound_preference_icon_margin_end"
+        android:contentDescription="@null" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/sound_preference_row_padding_vertical"
+        android:paddingBottom="@dimen/sound_preference_row_padding_vertical">
+
+        <TextView
+            android:id="@+id/tv_app_name"
+            style="@style/TextAppearance.SoundEnhancement.RowTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/tv_app_package"
+            style="@style/TextAppearance.SoundEnhancement.RowSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1" />
+    </LinearLayout>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/switch_app_priority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false" />
+
+</LinearLayout>

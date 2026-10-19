@@ -1,0 +1,42 @@
+//
+// Copyright (C) 2024-2026 XperiaLabs Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+android_app {
+    name: "SoundEnhancement",
+    defaults: ["SettingsLibDefaults"],
+    certificate: "platform",
+
+    srcs: [
+        "src/**/*.java",
+        "src/**/*.kt",
+    ],
+    resource_dirs: ["res"],
+
+    platform_apis: true,
+    privileged: true,
+    system_ext_specific: true,
+
+    static_libs: [
+        "XperiaSettingsBase",
+        "androidx.core_core",
+        "androidx.core_core-ktx",
+        "androidx.appcompat_appcompat",
+        "androidx.preference_preference",
+        "androidx.recyclerview_recyclerview",
+        "androidx.lifecycle_lifecycle-runtime-ktx",
+        "com.google.android.material_material",
+        "kotlinx-coroutines-android",
+        "kotlinx-coroutines-core",
+    ],
+
+    kotlincflags: [
+        "-Xjvm-default=all",
+    ],
+
+    optimize: {
+        enabled: false,
+    },
+}

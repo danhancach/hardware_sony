@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sound_enhance_app_name">Cải thiện âm thanh</string>
+    <string name="sound_enhance_audio_settings_title">Cài đặt âm thanh</string>
+    <string name="sound_enhance_audio_settings_summary">Dolby Sound, DSEE Ultimate, 360 Reality Audio</string>
+
+    <string name="sound_enhance_playback_title">Chất lượng phát lại</string>
+    <string name="sound_enhance_playback_summary">Cải thiện chất lượng âm thanh loa và tai nghe</string>
+
+    <!-- Main 2-mode selection -->
+    <string name="sound_enhance_mode_recommended">Đề xuất</string>
+    <string name="sound_enhance_mode_recommended_title">Chế độ Đề xuất</string>
+    <string name="sound_enhance_mode_recommended_desc">Hệ thống tự động phân tích và tối ưu hóa hiệu ứng âm thanh theo từng nội dung đang phát. Các tùy chỉnh bên dưới được hệ thống quản lý.</string>
+    <string name="sound_enhance_mode_recommended_summary">@string/sound_enhance_mode_recommended_desc</string>
+
+    <string name="sound_enhance_mode_custom">Tùy chỉnh</string>
+    <string name="sound_enhance_mode_custom_title">Chế độ Tùy chỉnh</string>
+    <string name="sound_enhance_mode_custom_desc">Tự do bật/tắt và tinh chỉnh các tính năng âm thanh Dolby Sound, DSEE Ultimate và 360 Upmix theo sở thích của bạn.</string>
+    <string name="sound_enhance_mode_custom_summary">@string/sound_enhance_mode_custom_desc</string>
+
+    <string name="sound_enhance_managed_by_recommend">Đang được quản lý tự động bởi Chế độ Đề xuất</string>
+    <string name="sound_enhance_badge_manual">THỦ CÔNG</string>
+
+    <string name="sound_enhance_category_features">Tính năng âm thanh</string>
+    <string name="sound_enhance_category_recording">Chất lượng ghi âm</string>
+
+    <string name="sound_enhance_dolby_title">Dolby Sound</string>
+    <string name="sound_enhance_dolby_summary">Âm thanh điện ảnh đa chiều, giọng thoại rõ ràng và âm trầm mạnh mẽ</string>
+    <string name="sound_enhance_dolby_dialog_title">Cài đặt Dolby Sound</string>
+    <string name="sound_enhance_dolby_dialog_summary">Chọn cấu hình âm thanh phù hợp với nhu cầu giải trí của bạn</string>
+
+    <string name="sound_enhance_dsee_title">DSEE Ultimate</string>
+    <string name="sound_enhance_dsee_summary">Sử dụng AI nâng cấp âm thanh nén lên chất lượng âm thanh độ phân giải cao Hi-Res</string>
+
+    <string name="sound_enhance_threesixty_title">360 Upmix</string>
+    <string name="sound_enhance_threesixty_summary">Mô phỏng không gian âm thanh 3D sống động từ nguồn stereo 2 kênh (dành cho tai nghe)</string>
+    <string name="sound_enhance_threesixty_dialog_title">Cài đặt 360 Upmix</string>
+    <string name="sound_enhance_threesixty_dialog_summary">Chọn chế độ không gian âm thanh đa chiều ưa thích</string>
+
+    <string name="sound_enhance_effect_priority_title">Ưu tiên hiệu ứng</string>
+    <string name="sound_enhance_effect_priority_summary">Ưu tiên 360 Upmix hoặc DSEE Ultimate hơn Dolby Sound cho ứng dụng đã chọn</string>
+    <string name="sound_enhance_effect_priority_instruction">Hiệu ứng bạn đã bật (360 Upmix hoặc DSEE Ultimate) được ưu tiên hơn Dolby Sound đối với âm thanh đa phương tiện của các ứng dụng đã đăng ký tại đây.</string>
+
+    <string name="sound_enhance_wind_nr_title">Giảm tiếng ồn của gió</string>
+    <string name="sound_enhance_wind_nr_summary">Giảm tạp âm gió vào micrô khi ghi âm hoặc quay video</string>
+
+    <string name="sound_enhance_open_dolby_app">Bộ cân bằng Dolby Audio</string>
+    <string name="sound_enhance_open_dolby_app_summary">Tinh chỉnh dải tần đồ họa và các cài đặt nâng cao</string>
+    <string name="sound_enhance_open_360_app">Cài đặt 360 Reality Audio</string>
+
+    <!-- Profiles -->
+    <string name="sound_enhance_profile_dynamic">Sống động</string>
+    <string name="sound_enhance_profile_movie">Phim ảnh</string>
+    <string name="sound_enhance_profile_music">Âm nhạc</string>
+    <string name="sound_enhance_profile_custom">Tùy chỉnh</string>
+
+    <string name="sound_enhance_upmix_auto">Tự động</string>
+    <string name="sound_enhance_upmix_cinema">Rạp chiếu</string>
+    <string name="sound_enhance_upmix_music">Âm nhạc</string>
+
+    <!-- Effect Priority -->
+    <string name="sound_enhance_priority_apps_count">%1$d ứng dụng đã chọn</string>
+    <string name="sound_enhance_priority_search_hint">Tìm kiếm ứng dụng…</string>
+    <string name="sound_enhance_priority_preset_header">Ứng dụng hỗ trợ sẵn</string>
+    <string name="sound_enhance_priority_user_header">Ứng dụng người dùng thêm</string>
+    <string name="sound_enhance_priority_empty">Không tìm thấy ứng dụng phù hợp</string>
+
+    <string name="sound_enhance_active_badge">TỰ ĐỘNG BẬT</string>
+    <string name="sound_enhance_status_off">Tắt</string>
+    <string name="sound_enhance_status_on">Bật</string>
+
+    <!-- Legacy Sony and System Settings compatibility aliases -->
+    <string name="sound_enhance_strings_app_name_txt">@string/sound_enhance_app_name</string>
+    <string name="sound_enhance_strings_audio_settings_txt">@string/sound_enhance_audio_settings_title</string>
+    <string name="sound_enhance_strings_audio_settings_description_txt">@string/sound_enhance_audio_settings_summary</string>
+    <string name="sound_enhance_strings_playback_quality_settings_title_txt">@string/sound_enhance_playback_title</string>
+    <string name="sound_enhance_strings_playback_quality_settings_summary_txt">@string/sound_enhance_playback_summary</string>
+    <string name="sound_enhance_strings_recording_quality_settings_title_txt">@string/sound_enhance_wind_nr_title</string>
+    <string name="sound_enhance_strings_recording_quality_settings_summary_txt">@string/sound_enhance_wind_nr_summary</string>
+    <string name="audio_settings_white_list_title_txt">@string/sound_enhance_effect_priority_title</string>
+    <string name="sound_enhance_strings_dolby_sound_txt">@string/sound_enhance_dolby_title</string>
+    <string name="sound_enhance_strings_dolby_sound_summary_txt">@string/sound_enhance_dolby_summary</string>
+    <string name="sound_enhance_strings_setting_dsee_ultimate_txt">@string/sound_enhance_dsee_title</string>
+    <string name="sound_enhance_strings_setting_dsee_ultimate_summary_txt">@string/sound_enhance_dsee_summary</string>
+    <string name="sound_enhance_strings_upmix_txt">@string/sound_enhance_threesixty_title</string>
+    <string name="sound_enhance_strings_upmix_summary_txt">@string/sound_enhance_threesixty_summary</string>
+    <string name="sound_enhance_strings_setting_wind_noise_reduction_txt">@string/sound_enhance_wind_nr_title</string>
+    <string name="sound_enhance_strings_setting_wind_noise_reduction_summary_txt">@string/sound_enhance_wind_nr_summary</string>
+</resources>

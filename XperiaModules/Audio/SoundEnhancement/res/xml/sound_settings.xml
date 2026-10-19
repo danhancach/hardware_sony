@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/sound_enhance_audio_settings_title">
+
+    <com.sonyericsson.soundenhancement.ui.SoundLayoutPreference
+        android:key="pref_hero_mode"
+        android:layout="@layout/pref_sound_hero_card"
+        android:selectable="false"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+
+    <com.sonyericsson.soundenhancement.ui.SoundLayoutPreference
+        android:key="pref_dolby"
+        android:layout="@layout/pref_sound_dolby_card"
+        android:selectable="false"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+
+    <com.sonyericsson.soundenhancement.ui.SoundLayoutPreference
+        android:key="pref_dsee"
+        android:layout="@layout/pref_sound_dsee_card"
+        android:selectable="false"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+
+    <com.sonyericsson.soundenhancement.ui.SoundLayoutPreference
+        android:key="pref_threesixty"
+        android:layout="@layout/pref_sound_threesixty_card"
+        android:selectable="false"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+
+    <com.sonyericsson.soundenhancement.ui.SoundLayoutPreference
+        android:key="pref_effect_priority"
+        android:layout="@layout/pref_sound_effect_priority_card"
+        android:selectable="false"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+
+    <com.sonyericsson.soundenhancement.ui.SoundLayoutPreference
+        android:key="pref_recording"
+        android:layout="@layout/pref_sound_recording_card"
+        android:selectable="false"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+
+</PreferenceScreen>

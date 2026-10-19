@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base App Theme Material 3 Expressive -->
+    <style name="Theme.Material3.Expressive.SoundEnhancement" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar">
+        <item name="android:windowBackground">?attr/colorSurfaceContainer</item>
+        <item name="android:colorBackground">?attr/colorSurfaceContainer</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.SoundEnhancement.BottomSheetDialog</item>
+    </style>
+
+    <!-- Theme Material 3 + mau dong tach biet cho noi dung Audio ben trong host SettingsLib -->
+    <style name="Theme.SoundEnhancement.Content" parent="Theme.Material3.DynamicColors.DayNight">
+        <item name="android:clipToPadding">true</item>
+        <item name="android:clipChildren">true</item>
+    </style>
+
+    <!-- BottomSheetDialog Theme Edge-to-Edge chuan Material 3, khong ke thua token ghi de cua host -->
+    <style name="ThemeOverlay.SoundEnhancement.BottomSheetDialog" parent="Theme.Material3.DayNight.BottomSheetDialog">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="enableEdgeToEdge">true</item>
+        <item name="bottomSheetStyle">@style/Widget.SoundEnhancement.BottomSheet.Modal</item>
+    </style>
+
+    <style name="Widget.SoundEnhancement.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">?attr/colorSurfaceContainerHigh</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.SoundEnhancement.BottomSheet</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+        <item name="shouldRemoveExpandedCorners">false</item>
+        <item name="paddingBottomSystemWindowInsets">true</item>
+    </style>
+
+    <style name="ShapeAppearance.SoundEnhancement.BottomSheet" parent="">
+        <item name="cornerSizeTopLeft">28dp</item>
+        <item name="cornerSizeTopRight">28dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <!-- Section Title ngoai the -->
+    <style name="TextAppearance.SoundEnhancement.SectionTitle" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <!-- Row Title -->
+    <style name="TextAppearance.SoundEnhancement.RowTitle" parent="android:TextAppearance.Material.Subhead">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Row Summary -->
+    <style name="TextAppearance.SoundEnhancement.RowSummary" parent="android:TextAppearance.Material.Body1">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- Badge Active -->
+    <style name="Widget.SoundEnhancement.ActiveBadge" parent="">
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+        <item name="android:background">?attr/colorPrimaryContainer</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+    </style>
+</resources>

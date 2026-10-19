@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Theme.SoundEnhancement.Content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- The 4: Uu tien hieu ung (Effect Priority) -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_effect_priority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sound_preference_card_margin_horizontal"
+        android:layout_marginEnd="@dimen/sound_preference_card_margin_horizontal"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="@dimen/sound_preference_corner_radius"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/sound_card_background"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:id="@+id/row_effect_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/sound_preference_row_min_height"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/sound_preference_row_padding_horizontal"
+            android:paddingEnd="@dimen/sound_preference_row_padding_horizontal"
+            android:paddingTop="@dimen/sound_preference_row_padding_vertical"
+            android:paddingBottom="@dimen/sound_preference_row_padding_vertical">
+
+            <FrameLayout
+                android:layout_width="@dimen/sound_preference_icon_size"
+                android:layout_height="@dimen/sound_preference_icon_size"
+                android:layout_marginEnd="@dimen/sound_preference_icon_margin_end">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_effect_priority" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.SoundEnhancement.RowTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_enhance_effect_priority_title" />
+
+                <TextView
+                    android:id="@+id/tv_priority_summary"
+                    style="@style/TextAppearance.SoundEnhancement.RowSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/sound_enhance_effect_priority_summary" />
+
+                <TextView
+                    android:id="@+id/tv_priority_count"
+                    style="@style/TextAppearance.SoundEnhancement.RowSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:text="@string/sound_enhance_priority_apps_count" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_expand_chevron"
+                app:tint="?attr/colorOnSurfaceVariant" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

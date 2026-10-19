@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Theme.SoundEnhancement.Content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Section Title 2: Chat luong ghi am -->
+    <TextView
+        style="@style/TextAppearance.SoundEnhancement.SectionTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sound_enhance_category_recording" />
+
+    <!-- The Card 3: Chat luong ghi am (Wind Noise Reduction) boc trong MaterialCardView -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_recording"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sound_preference_card_margin_horizontal"
+        android:layout_marginEnd="@dimen/sound_preference_card_margin_horizontal"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="@dimen/sound_preference_corner_radius"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/sound_card_background"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:id="@+id/row_wind_nr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/sound_preference_row_min_height"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/sound_preference_row_padding_horizontal"
+            android:paddingEnd="@dimen/sound_preference_row_padding_horizontal">
+
+            <FrameLayout
+                android:layout_width="@dimen/sound_preference_icon_size"
+                android:layout_height="@dimen/sound_preference_icon_size"
+                android:layout_marginEnd="@dimen/sound_preference_icon_margin_end">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_wind_nr" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/sound_preference_row_padding_vertical"
+                android:paddingBottom="@dimen/sound_preference_row_padding_vertical">
+
+                <TextView
+                    style="@style/TextAppearance.SoundEnhancement.RowTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_enhance_wind_nr_title" />
+
+                <TextView
+                    android:id="@+id/tv_wind_nr_summary"
+                    style="@style/TextAppearance.SoundEnhancement.RowSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_enhance_wind_nr_summary" />
+            </LinearLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switch_wind_nr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

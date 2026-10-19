@@ -55,24 +55,44 @@ class XperiaSettingsPackage(private val fragment: PreferenceFragmentCompat) {
     }
 
     fun setupAudioSettings() {
+        val soundPref = fragment.findPreference<Preference>("audio_settings")
+        val category = fragment.findPreference<PreferenceCategory>("sound")
+
+        // 1. Thu mo SoundEnhancement (uu tien direct SoundSettingsActivity hoac AudioEffectMenuActivity)
         try {
             val packageInfo = pm?.getPackageInfo(audioPackageName, PackageManager.GET_ACTIVITIES)
             if (packageInfo != null && PackageInfoCompat.getLongVersionCode(packageInfo) >= 1) {
-                fragment.findPreference<Preference>("audio_settings")?.isVisible = true
-                val intent = Intent().apply {
-                    setClassName(audioPackageName, audioClassName)
+                val directIntent = Intent().setClassName(audioPackageName, "com.sonyericsson.soundenhancement.ui.SoundSettingsActivity")
+                val legacyIntent = Intent().setClassName(audioPackageName, audioClassName)
+                val targetIntent = if (directIntent.resolveActivity(pm) != null) {
+                    directIntent
+                } else if (legacyIntent.resolveActivity(pm) != null) {
+                    legacyIntent
+                } else {
+                    directIntent
                 }
-                fragment.findPreference<Preference>("audio_settings")?.intent = intent
-            } else {
-                val category = fragment.findPreference<PreferenceCategory>("sound")
-                fragment.findPreference<Preference>("audio_settings")?.isVisible = false
-                category?.isVisible = false
+                soundPref?.isVisible = true
+                soundPref?.intent = targetIntent
+                return
             }
-        } catch (e: PackageManager.NameNotFoundException) {
-            val category = fragment.findPreference<PreferenceCategory>("sound")
-            fragment.findPreference<Preference>("audio_settings")?.isVisible = false
-            category?.isVisible = false
+        } catch (_: PackageManager.NameNotFoundException) {
         }
+
+        // 2. Fallback sang com.xperia.settings.audio neu may khong co SoundEnhancement
+        val fallbackPackage = "com.xperia.settings.audio"
+        val fallbackClass = "com.xperia.settings.audio.AudioSettingsActivity"
+        try {
+            val packageInfo = pm?.getPackageInfo(fallbackPackage, PackageManager.GET_ACTIVITIES)
+            if (packageInfo != null && PackageInfoCompat.getLongVersionCode(packageInfo) >= 1) {
+                soundPref?.isVisible = true
+                soundPref?.intent = Intent().setClassName(fallbackPackage, fallbackClass)
+                return
+            }
+        } catch (_: PackageManager.NameNotFoundException) {
+        }
+
+        soundPref?.isVisible = false
+        category?.isVisible = false
     }
 
     fun setupBatterySettings() {
