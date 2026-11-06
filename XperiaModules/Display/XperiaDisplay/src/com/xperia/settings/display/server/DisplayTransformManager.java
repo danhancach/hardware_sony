@@ -74,10 +74,6 @@ public class DisplayTransformManager {
     private static final int SURFACE_FLINGER_TRANSACTION_QUERY_COLOR_MANAGED = 1030;
 
     @VisibleForTesting
-    static final String PERSISTENT_PROPERTY_SATURATION = "persist.sys.sf.color_saturation";
-    @VisibleForTesting
-    static final String PERSISTENT_PROPERTY_COMPOSITION_COLOR_MODE = "persist.sys.sf.color_mode";
-    @VisibleForTesting
     static final String PERSISTENT_PROPERTY_DISPLAY_COLOR = "persist.sys.sf.native_mode";
 
     private static final float COLOR_SATURATION_NATURAL = 1.0f;
@@ -265,6 +261,8 @@ public class DisplayTransformManager {
      * Dung Display.COLOR_MODE_INVALID de giu composition color mode hien tai (P3).
      */
     public boolean applyDisplayColorSetting(int colorMode, int compositionColorMode) {
+        // CreatorModeUtils persists the mode through ColorDisplayManager. The system
+        // service owns persist.sys.sf.* writes; this app only applies the live SF state.
         if (colorMode == ColorDisplayManager.COLOR_MODE_NATURAL) {
             applySaturation(COLOR_SATURATION_NATURAL);
             setDisplayColor(DISPLAY_COLOR_MANAGED, compositionColorMode);
@@ -311,11 +309,6 @@ public class DisplayTransformManager {
      * Propagates the provided saturation to the SurfaceFlinger.
      */
     private void applySaturation(float saturation) {
-        try {
-            SystemProperties.set(PERSISTENT_PROPERTY_SATURATION, Float.toString(saturation));
-        } catch (RuntimeException e) {
-            Slog.w(TAG, "Could not persist saturation property", e);
-        }
         final Parcel data = Parcel.obtain();
         data.writeInterfaceToken("android.ui.ISurfaceComposer");
         data.writeFloat(saturation);
@@ -332,16 +325,6 @@ public class DisplayTransformManager {
      * Toggles native mode on/off in SurfaceFlinger.
      */
     private void setDisplayColor(int color, int compositionColorMode) {
-        try {
-            SystemProperties.set(PERSISTENT_PROPERTY_DISPLAY_COLOR, Integer.toString(color));
-            if (compositionColorMode != Display.COLOR_MODE_INVALID) {
-                SystemProperties.set(PERSISTENT_PROPERTY_COMPOSITION_COLOR_MODE,
-                    Integer.toString(compositionColorMode));
-            }
-        } catch (RuntimeException e) {
-            Slog.w(TAG, "Could not persist display color property", e);
-        }
-
         final Parcel data = Parcel.obtain();
         data.writeInterfaceToken("android.ui.ISurfaceComposer");
         data.writeInt(color);
