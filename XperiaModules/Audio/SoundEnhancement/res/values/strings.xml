@@ -24,6 +24,12 @@
     <string name="sound_enhance_category_features">Audio features</string>
     <string name="sound_enhance_category_recording">Recording quality</string>
 
+    <string name="sound_enhance_speaker_portrait_mono_title">Speaker mono</string>
+    <string name="sound_enhance_speaker_portrait_mono_summary">Combine left and right channels on the built-in speakers in portrait.</string>
+    <string name="sound_enhance_speaker_portrait_mono_tile">Speaker mono</string>
+    <string name="sound_enhance_speaker_portrait_mono_on">Mono</string>
+    <string name="sound_enhance_speaker_portrait_mono_off">Stereo</string>
+
     <string name="sound_enhance_dolby_title">Dolby Sound</string>
     <string name="sound_enhance_dolby_summary">Immersive, cinematic sound with clear dialogue and rich bass</string>
     <string name="sound_enhance_dolby_dialog_title">Dolby Sound settings</string>

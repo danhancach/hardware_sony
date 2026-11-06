@@ -26,6 +26,7 @@ import com.sonyericsson.soundenhancement.backend.DolbyController
 import com.sonyericsson.soundenhancement.backend.DseeController
 import com.sonyericsson.soundenhancement.backend.EffectPriorityManager
 import com.sonyericsson.soundenhancement.backend.SpatialAudioController
+import com.sonyericsson.soundenhancement.backend.SpeakerPortraitMonoStore
 import com.sonyericsson.soundenhancement.backend.WindNoiseController
 
 // Fragment chinh dung PreferenceScreen/RecyclerView chung duong cuon voi toan bo menu Xperia Settings
@@ -40,6 +41,7 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
     private lateinit var spatialController: SpatialAudioController
     private lateinit var windController: WindNoiseController
     private lateinit var priorityManager: EffectPriorityManager
+    private lateinit var speakerPortraitStore: SpeakerPortraitMonoStore
     private val modeTransition = AudioModeTransition()
 
     // Views Hero Card
@@ -52,6 +54,9 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
     private lateinit var chipCustom: Chip
 
     // Views Feature Cards
+    private lateinit var rowSpeakerPortrait: View
+    private lateinit var switchSpeakerPortrait: MaterialSwitch
+
     private lateinit var btnDolbyDetail: View
     private lateinit var btnDolbyToggleArea: View
     private lateinit var switchDolby: MaterialSwitch
@@ -76,6 +81,7 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
 
     private var isUpdatingUi = false
     private var observersRegistered = false
+    private var pendingScrollToSpeakerMono = false
 
     // Observer theo doi thay doi trang thai Dolby tu DaxService / DaxUI
     private val dolbySettingsObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
@@ -87,11 +93,28 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
         }
     }
 
+    private val speakerPortraitObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+        override fun onChange(selfChange: Boolean, uri: Uri?) {
+            super.onChange(selfChange, uri)
+            if (isAdded && !isUpdatingUi) {
+                switchSpeakerPortrait.isChecked = speakerPortraitStore.isEnabled()
+            }
+        }
+    }
+
     private val dolbyIntentReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (isAdded && !isUpdatingUi) {
                 updateUiState()
             }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            pendingScrollToSpeakerMono =
+                arguments?.getBoolean(ARG_SCROLL_TO_SPEAKER_MONO, false) == true
         }
     }
 
@@ -105,6 +128,7 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
         spatialController = SpatialAudioController(ctx)
         windController = WindNoiseController(ctx)
         priorityManager = EffectPriorityManager(ctx)
+        speakerPortraitStore = SpeakerPortraitMonoStore(ctx)
 
         initPreferenceViews()
         initCustomSettingsIfFirstTime()
@@ -124,12 +148,29 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
                 extraBottomPx,
             )
         }
+        if (pendingScrollToSpeakerMono) {
+            pendingScrollToSpeakerMono = false
+            scrollToSpeakerPortraitMono()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         activity?.title = getString(R.string.sound_enhance_audio_settings_title)
         updateUiState()
+    }
+
+    fun scrollToSpeakerPortraitMono() {
+        val recycler = listView
+        if (recycler == null) {
+            pendingScrollToSpeakerMono = true
+            return
+        }
+        recycler.post {
+            if (isAdded) {
+                scrollToPreference(KEY_SPEAKER_PORTRAIT_MONO)
+            }
+        }
     }
 
     private fun registerDolbyObserversIfNeeded() {
@@ -152,6 +193,11 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
         } catch (e: Exception) {
             android.util.Log.w(AudioConstants.TAG, "Khong the dang ky dolby observers: $e")
         }
+        resolver.registerContentObserver(
+            SpeakerPortraitMonoStore.settingsUri(),
+            false,
+            speakerPortraitObserver,
+        )
         observersRegistered = true
     }
 
@@ -182,6 +228,10 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
         switchThreesixty = threesixtyPref.findViewById(R.id.switch_threesixty)
         tvThreesixtySummary = threesixtyPref.findViewById(R.id.tv_threesixty_summary)
 
+        val speakerMonoPref = findPreference<SoundLayoutPreference>(KEY_SPEAKER_PORTRAIT_MONO)!!
+        rowSpeakerPortrait = speakerMonoPref.findViewById(R.id.row_speaker_portrait_mono)
+        switchSpeakerPortrait = speakerMonoPref.findViewById(R.id.switch_speaker_portrait_mono)
+
         val effectPriorityPref = findPreference<SoundLayoutPreference>(KEY_EFFECT_PRIORITY)!!
         rowEffectPriority = effectPriorityPref.findViewById(R.id.row_effect_priority)
         tvPriorityCount = effectPriorityPref.findViewById(R.id.tv_priority_count)
@@ -206,6 +256,17 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
                 R.id.chip_mode_recommended -> applyMode(AudioConstants.MODE_RECOMMENDED)
                 R.id.chip_mode_custom -> applyMode(AudioConstants.MODE_CUSTOM)
             }
+        }
+
+        rowSpeakerPortrait.setOnClickListener {
+            if (isUpdatingUi) return@setOnClickListener
+            val current = speakerPortraitStore.isEnabled()
+            val target = !current
+            if (!speakerPortraitStore.setEnabled(target)) {
+                switchSpeakerPortrait.isChecked = speakerPortraitStore.isEnabled()
+                return@setOnClickListener
+            }
+            switchSpeakerPortrait.isChecked = target
         }
 
         // Hang Dolby Sound: Vung chi tiet ben trai -> mo BottomSheet
@@ -508,6 +569,9 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
                 switchWindNr.isChecked = windController.isEnabled()
             }
 
+            // Mono loa trong: doc lap Recommended/Custom, luon chon duoc
+            switchSpeakerPortrait.isChecked = speakerPortraitStore.isEnabled()
+
             // 5. Dem ung dung trong Effect Priority
             val count = priorityManager.getActivePriorityAppCount()
             tvPriorityCount.text = getString(R.string.sound_enhance_priority_apps_count, count)
@@ -574,6 +638,7 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
             if (ctx != null) {
                 try {
                     ctx.contentResolver.unregisterContentObserver(dolbySettingsObserver)
+                    ctx.contentResolver.unregisterContentObserver(speakerPortraitObserver)
                 } catch (_: Exception) {
                 }
                 try {
@@ -590,13 +655,23 @@ class SoundSettingsFragment : SettingsBasePreferenceFragment() {
     }
 
     companion object {
+        private const val ARG_SCROLL_TO_SPEAKER_MONO = "scroll_to_speaker_mono"
         private const val PREFS_NAME = "sound_enhancement_prefs"
 
         private const val KEY_HERO_MODE = "pref_hero_mode"
         private const val KEY_DOLBY = "pref_dolby"
         private const val KEY_DSEE = "pref_dsee"
         private const val KEY_THREESIXTY = "pref_threesixty"
+        private const val KEY_SPEAKER_PORTRAIT_MONO = "pref_speaker_portrait_mono"
         private const val KEY_EFFECT_PRIORITY = "pref_effect_priority"
         private const val KEY_RECORDING = "pref_recording"
+
+        fun newInstance(scrollToSpeakerMono: Boolean = false): SoundSettingsFragment {
+            return SoundSettingsFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(ARG_SCROLL_TO_SPEAKER_MONO, scrollToSpeakerMono)
+                }
+            }
+        }
     }
 }

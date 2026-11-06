@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Theme.SoundEnhancement.Content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_speaker_portrait_mono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sound_preference_card_margin_horizontal"
+        android:layout_marginEnd="@dimen/sound_preference_card_margin_horizontal"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="@dimen/sound_preference_corner_radius"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/sound_card_background"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:id="@+id/row_speaker_portrait_mono"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/sound_preference_row_min_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="@dimen/sound_preference_row_padding_horizontal"
+            android:paddingEnd="@dimen/sound_preference_row_padding_horizontal">
+
+            <FrameLayout
+                android:layout_width="@dimen/sound_preference_icon_size"
+                android:layout_height="@dimen/sound_preference_icon_size"
+                android:layout_marginEnd="@dimen/sound_preference_icon_margin_end">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_speaker_portrait_mono"
+                    app:tint="?android:attr/colorControlNormal" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingEnd="12dp"
+                android:paddingTop="@dimen/sound_preference_row_padding_vertical"
+                android:paddingBottom="@dimen/sound_preference_row_padding_vertical">
+
+                <TextView
+                    style="@style/TextAppearance.SoundEnhancement.RowTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_enhance_speaker_portrait_mono_title" />
+
+                <TextView
+                    android:id="@+id/tv_speaker_portrait_mono_summary"
+                    style="@style/TextAppearance.SoundEnhancement.RowSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/sound_enhance_speaker_portrait_mono_summary" />
+            </LinearLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switch_speaker_portrait_mono"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

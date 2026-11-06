@@ -24,6 +24,12 @@
     <string name="sound_enhance_category_features">Tính năng âm thanh</string>
     <string name="sound_enhance_category_recording">Chất lượng ghi âm</string>
 
+    <string name="sound_enhance_speaker_portrait_mono_title">Speaker mono</string>
+    <string name="sound_enhance_speaker_portrait_mono_summary">Trộn kênh trái và phải trên loa máy khi màn hình dọc.</string>
+    <string name="sound_enhance_speaker_portrait_mono_tile">Speaker mono</string>
+    <string name="sound_enhance_speaker_portrait_mono_on">Mono</string>
+    <string name="sound_enhance_speaker_portrait_mono_off">Stereo</string>
+
     <string name="sound_enhance_dolby_title">Dolby Sound</string>
     <string name="sound_enhance_dolby_summary">Âm thanh điện ảnh đa chiều, giọng thoại rõ ràng và âm trầm mạnh mẽ</string>
     <string name="sound_enhance_dolby_dialog_title">Cài đặt Dolby Sound</string>

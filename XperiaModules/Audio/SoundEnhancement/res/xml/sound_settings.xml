@@ -32,6 +32,13 @@
         app:allowDividerBelow="false" />
 
     <com.sonyericsson.soundenhancement.ui.SoundLayoutPreference
+        android:key="pref_speaker_portrait_mono"
+        android:layout="@layout/pref_sound_speaker_mono_card"
+        android:selectable="false"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+
+    <com.sonyericsson.soundenhancement.ui.SoundLayoutPreference
         android:key="pref_effect_priority"
         android:layout="@layout/pref_sound_effect_priority_card"
         android:selectable="false"

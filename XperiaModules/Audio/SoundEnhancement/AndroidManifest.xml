@@ -42,6 +42,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
+            <!-- Nhan giu tile QS mo dung man hinh cai dat loa -->
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+
             <!-- Tich hop vao Android Settings (Sound & Vibration) -->
             <meta-data
                 android:name="com.android.settings.category"
@@ -241,6 +246,20 @@
                 <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
             </intent-filter>
         </provider>
+
+        <service
+            android:name=".SpeakerPortraitMonoTileService"
+            android:label="@string/sound_enhance_speaker_portrait_mono_tile"
+            android:icon="@drawable/ic_speaker_portrait_mono"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
+        </service>
 
     </application>
 </manifest>
