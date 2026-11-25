@@ -14,24 +14,25 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import com.android.settingslib.widget.MainSwitchBar
+import androidx.preference.Preference
+import com.android.settingslib.widget.LayoutPreference
+import com.android.settingslib.widget.MainSwitchPreference
+import com.android.settingslib.widget.SettingsBasePreferenceFragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.xperia.settings.ui.XperiaCollapsingToolbarBaseActivity
+import com.xperia.settings.ui.XperiaMiuixScrollCoordinator
 import com.xperia.settings.charger.monitor.BatteryReader
 import com.xperia.settings.charger.monitor.BatterySnapshot
 import com.xperia.settings.charger.monitor.BatteryMonitorNotification
@@ -43,7 +44,8 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-class BatteryMonitorFragment : Fragment() {
+class BatteryMonitorFragment : SettingsBasePreferenceFragment(),
+    Preference.OnPreferenceChangeListener {
 
     private lateinit var statsTracker: BatteryStatsTracker
     private val handler = Handler(Looper.getMainLooper())
@@ -51,8 +53,8 @@ class BatteryMonitorFragment : Fragment() {
     private var spinnerReady = false
     private var monitorEnabled = true
 
-    private var mainSwitchBar: MainSwitchBar? = null
-    private var contentView: View? = null
+    private var mainSwitchPref: MainSwitchPreference? = null
+    private var contentPref: LayoutPreference? = null
 
     private var levelView: TextView? = null
     private var tempView: TextView? = null
@@ -90,63 +92,70 @@ class BatteryMonitorFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.battery_monitor, container, false)
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.battery_monitor_settings, rootKey)
         statsTracker = BatteryStatsTracker.get(requireContext())
 
-        contentView = view.findViewById(R.id.battery_monitor_content)
-        setupMainSwitch(view.findViewById(R.id.battery_monitor_main_switch))
+        contentPref = findPreference(KEY_CONTENT)
+        mainSwitchPref = findPreference(KEY_ENABLE)
+        setupMainSwitch()
 
-        levelView = view.findViewById(R.id.batmon_level)
+        levelView = contentPref?.findViewById(R.id.batmon_level)
         // Font % vua dam (khong qua dam/nhat)
         // % pin: to hon mot chut, dam vua (500)
         levelView?.typeface = Typeface.create(Typeface.SANS_SERIF, 500, false)
-        tempView = view.findViewById(R.id.batmon_temp)
-        currentView = view.findViewById(R.id.batmon_current)
-        statusView = view.findViewById(R.id.batmon_status)
-        powerView = view.findViewById(R.id.batmon_power)
+        tempView = contentPref?.findViewById(R.id.batmon_temp)
+        currentView = contentPref?.findViewById(R.id.batmon_current)
+        statusView = contentPref?.findViewById(R.id.batmon_status)
+        powerView = contentPref?.findViewById(R.id.batmon_power)
 
-        totalTimeView = view.findViewById(R.id.battery_time)
-        screenOnTimeView = view.findViewById(R.id.screen_on)
-        screenOnUsageView = view.findViewById(R.id.screen_on_usage)
-        screenOnDrainView = view.findViewById(R.id.screen_drain)
-        screenOffTimeView = view.findViewById(R.id.screen_off)
-        screenOffUsageView = view.findViewById(R.id.screen_off_usage)
-        deepSleepView = view.findViewById(R.id.bm_deepsleep)
-        heldAwakeView = view.findViewById(R.id.held_awake)
-        screenOffDrainView = view.findViewById(R.id.idle_drain)
-        chargeTimeView = view.findViewById(R.id.charge_time)
+        totalTimeView = contentPref?.findViewById(R.id.battery_time)
+        screenOnTimeView = contentPref?.findViewById(R.id.screen_on)
+        screenOnUsageView = contentPref?.findViewById(R.id.screen_on_usage)
+        screenOnDrainView = contentPref?.findViewById(R.id.screen_drain)
+        screenOffTimeView = contentPref?.findViewById(R.id.screen_off)
+        screenOffUsageView = contentPref?.findViewById(R.id.screen_off_usage)
+        deepSleepView = contentPref?.findViewById(R.id.bm_deepsleep)
+        heldAwakeView = contentPref?.findViewById(R.id.held_awake)
+        screenOffDrainView = contentPref?.findViewById(R.id.idle_drain)
+        chargeTimeView = contentPref?.findViewById(R.id.charge_time)
 
-        setupSpinner(view.findViewById(R.id.battery_spinner))
+        contentPref?.findViewById<Spinner>(R.id.battery_spinner)?.let(::setupSpinner)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupMenu()
     }
 
-    private fun setupMainSwitch(bar: MainSwitchBar) {
-        mainSwitchBar = bar
-        bar.setTitle(getString(R.string.battery_monitor_enable))
-        bar.show()
+    private fun setupMainSwitch() {
         val enabled = BatteryMonitorPrefs.isEnabled(requireContext())
         // Dat trang thai truoc listener de tranh ghi Global lai khi bind
         monitorEnabled = enabled
-        contentView?.visibility = if (enabled) View.VISIBLE else View.GONE
-        bar.isChecked = enabled
-        bar.addOnSwitchChangeListener { _, isChecked ->
-            if (isChecked == monitorEnabled) return@addOnSwitchChangeListener
-            BatteryMonitorPrefs.setEnabled(requireContext(), isChecked)
-            applyEnabledState(isChecked, refresh = true)
-            BatteryMonitorService.startService(requireContext())
+        contentPref?.isVisible = enabled
+        mainSwitchPref?.apply {
+            isChecked = enabled
+            onPreferenceChangeListener = this@BatteryMonitorFragment
         }
+    }
+
+    override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
+        if (preference.key != KEY_ENABLE) return false
+        val isChecked = newValue as? Boolean ?: return false
+        if (isChecked == monitorEnabled) return true
+        BatteryMonitorPrefs.setEnabled(requireContext(), isChecked)
+        applyEnabledState(isChecked, refresh = true)
+        BatteryMonitorService.startService(requireContext())
+        return true
     }
 
     private fun applyEnabledState(enabled: Boolean, refresh: Boolean) {
         monitorEnabled = enabled
-        contentView?.visibility = if (enabled) View.VISIBLE else View.GONE
+        if (!enabled) {
+            // Xoa ngay do dan con sot khi an the noi dung
+            listView?.let { XperiaMiuixScrollCoordinator.clearTension(it) }
+        }
+        contentPref?.isVisible = enabled
         activity?.invalidateOptionsMenu()
         handler.removeCallbacks(refreshRunnable)
         if (enabled && refresh && isResumed) {
@@ -252,7 +261,7 @@ class BatteryMonitorFragment : Fragment() {
         collapseCollapsingToolbar()
         BatteryMonitorService.startService(requireContext())
         monitorEnabled = BatteryMonitorPrefs.isEnabled(requireContext())
-        mainSwitchBar?.isChecked = monitorEnabled
+        mainSwitchPref?.isChecked = monitorEnabled
         applyEnabledState(monitorEnabled, refresh = false)
         requireContext().registerReceiver(
             batteryReceiver,
@@ -428,6 +437,8 @@ class BatteryMonitorFragment : Fragment() {
     }
 
     companion object {
+        private const val KEY_ENABLE = "battery_monitor_enable"
+        private const val KEY_CONTENT = "battery_monitor_content"
         // Current/power ~1 Hz khi UI mo; level/temp theo BATTERY_CHANGED
         private const val UI_REFRESH_MS = 1000L
     }

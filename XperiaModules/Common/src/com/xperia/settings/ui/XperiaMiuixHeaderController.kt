@@ -180,6 +180,10 @@ class XperiaMiuixHeaderController private constructor(
             },
         )
         collapsingToolbar.addOnAttachStateChangeListener(attachListener)
+        if (appBar.parent is CoordinatorLayout) {
+            // Giu AppBar o lop tren cung de overscroll translationY cua noi dung luon chui ben duoi
+            appBar.bringToFront()
+        }
         if (collapsingToolbar.isAttachedToWindow) {
             attachOffsetListener()
         }

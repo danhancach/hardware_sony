@@ -24,10 +24,17 @@
         app:cardElevation="0dp"
         app:cardBackgroundColor="@color/settingslib_materialColorSurfaceBright">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewpager"
+        <!-- Bao ve cu chi vuot ngang ViewPager2 o che do man hinh ngang -->
+        <com.xperia.settings.ui.XperiaNestedHorizontalAxisGuard
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.xperia.settings.ui.XperiaNestedHorizontalAxisGuard>
     </androidx.cardview.widget.CardView>
 
     <FrameLayout

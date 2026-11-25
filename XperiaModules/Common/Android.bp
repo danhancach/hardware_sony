@@ -10,8 +10,13 @@ android_library {
 
     srcs: [
         "src/com/xperia/settings/ui/XperiaMiuixTitleMotion.kt",
+        "src/com/xperia/settings/ui/XperiaStretchMath.kt",
+        "src/com/xperia/settings/ui/XperiaScrollPhase.kt",
+        "src/com/xperia/settings/ui/XperiaTouchAxisOwnership.kt",
         "src/com/xperia/settings/ui/XperiaAppBarScrollBehavior.kt",
         "src/com/xperia/settings/ui/XperiaMiuixHeaderController.kt",
+        "src/com/xperia/settings/ui/XperiaMiuixScrollCoordinator.kt",
+        "src/com/xperia/settings/ui/XperiaTouchArbitrationController.kt",
     ],
 
     platform_apis: true,
@@ -20,6 +25,7 @@ android_library {
         "androidx.appcompat_appcompat",
         "androidx.coordinatorlayout_coordinatorlayout",
         "androidx.core_core",
+        "androidx.recyclerview_recyclerview",
         "com.google.android.material_material",
     ],
 

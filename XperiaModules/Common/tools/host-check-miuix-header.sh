@@ -14,6 +14,11 @@ STDLIB="$KOTLIN_LIB/kotlin-stdlib.jar"
 
 "$KOTLINC" -cp "$STDLIB" -d "$OUT/classes" \
     "$COMMON_DIR/src/com/xperia/settings/ui/XperiaMiuixTitleMotion.kt" \
-    "$COMMON_DIR/tools/HostXperiaMiuixHeaderCheck.kt"
+    "$COMMON_DIR/src/com/xperia/settings/ui/XperiaStretchMath.kt" \
+    "$COMMON_DIR/src/com/xperia/settings/ui/XperiaScrollPhase.kt" \
+    "$COMMON_DIR/src/com/xperia/settings/ui/XperiaTouchAxisOwnership.kt" \
+    "$COMMON_DIR/tools/HostXperiaMiuixHeaderCheck.kt" \
+    "$COMMON_DIR/tools/HostXperiaMiuixTouchCheck.kt"
 
 java -cp "$OUT/classes:$STDLIB" com.xperia.settings.ui.tools.HostXperiaMiuixHeaderCheck
+java -cp "$OUT/classes:$STDLIB" com.xperia.settings.ui.tools.HostXperiaMiuixTouchCheck

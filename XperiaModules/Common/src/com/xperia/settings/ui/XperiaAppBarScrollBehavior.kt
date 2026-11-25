@@ -12,18 +12,33 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
+import kotlin.math.roundToInt
 
 /**
- * AppBarLayout.Behavior sua loi vuot ngan tha tay khong thu gon tieu de.
+ * Cau noi giua XperiaAppBarScrollBehavior va bo dieu khien dan hoi cuon.
+ */
+interface XperiaPhaseScrollOwner {
+    fun liveCaps(): XperiaScrollPhase.Caps
+    fun commitTension(state: XperiaStretchMath.TensionState)
+    fun onNestedPreFling(velocityX: Float, velocityY: Float): Boolean = false
+    fun onNestedFling(velocityY: Float, consumed: Boolean) {}
+    fun onNestedTouchScrollStopped() {}
+}
+
+/**
+ * AppBarLayout.Behavior hop nhat 4 pha cuon Miuix va fling gate tu cham tay.
  *
- * - Cho phep fling tu cham tay tiep tuc thu gon AppBar o onNestedPreScroll (dy > 0).
- * - Cho phep fling cham dinh danh sach mo rong AppBar o onNestedScroll (dyUnconsumed < 0).
- * - Van chan non-touch do ban phim / focus de tranh nhap nhay tieu de.
+ * - PreScroll: giai tension nguoc chieu truoc -> thu gon AppBar -> chuyen cho danh sach.
+ * - PostScroll: mo rong AppBar khi cham dinh -> keo dan mep hoac trang ngan.
+ * - Cho phep fling tu cham tay tiep tuc thu gon/mo rong AppBar va giu chan non-touch ban phim.
  */
 class XperiaAppBarScrollBehavior : AppBarLayout.Behavior {
 
     private val allowHeaderDrag: Boolean
     private val gate = XperiaAppBarScrollGate()
+
+    @Volatile
+    private var phaseOwner: XperiaPhaseScrollOwner? = null
 
     @JvmOverloads
     constructor(allowHeaderDrag: Boolean = false) : super() {
@@ -35,6 +50,12 @@ class XperiaAppBarScrollBehavior : AppBarLayout.Behavior {
         this.allowHeaderDrag = false
         installDragCallback()
     }
+
+    fun attachPhaseOwner(owner: XperiaPhaseScrollOwner?) {
+        phaseOwner = owner
+    }
+
+    fun phaseOwnerOrNull(): XperiaPhaseScrollOwner? = phaseOwner
 
     private fun installDragCallback() {
         setDragCallback(object : DragCallback() {
@@ -70,6 +91,9 @@ class XperiaAppBarScrollBehavior : AppBarLayout.Behavior {
         velocityY: Float,
     ): Boolean {
         gate.onNestedFlingDispatched()
+        if (phaseOwner?.onNestedPreFling(velocityX, velocityY) == true) {
+            return true
+        }
         return super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
     }
 
@@ -82,6 +106,7 @@ class XperiaAppBarScrollBehavior : AppBarLayout.Behavior {
         consumed: Boolean,
     ): Boolean {
         gate.onNestedFlingDispatched()
+        phaseOwner?.onNestedFling(velocityY, consumed)
         return super.onNestedFling(coordinatorLayout, child, target, velocityX, velocityY, consumed)
     }
 
@@ -94,11 +119,42 @@ class XperiaAppBarScrollBehavior : AppBarLayout.Behavior {
         consumed: IntArray,
         type: Int,
     ) {
-        if (!gate.shouldAllowNestedPreScroll(type == ViewCompat.TYPE_TOUCH, dy)) {
+        val isTouch = type == ViewCompat.TYPE_TOUCH
+        if (!gate.shouldAllowNestedPreScroll(isTouch, dy)) {
             return
         }
         gate.recordPreScroll(dy)
-        super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
+        val owner = phaseOwner
+        if (owner == null || dy == 0) {
+            super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
+            return
+        }
+
+        val caps = owner.liveCaps().let {
+            if (isTouch) it else it.copy(tensionE = 0f, tensionRawF = 0f, tensionUnbound = false)
+        }
+        val pre = XperiaScrollPhase.preScroll(-dy.toFloat(), caps)
+        val tensionDy = (-pre.tensionConsumed).roundToInt()
+            .coerceIn(minOf(0, dy), maxOf(0, dy))
+        if (tensionDy != 0) {
+            owner.commitTension(pre.nextTensionState)
+        }
+
+        val afterTension = dy - tensionDy
+        val headerConsumed = IntArray(2)
+        if (afterTension != 0) {
+            super.onNestedPreScroll(
+                coordinatorLayout,
+                child,
+                target,
+                dx,
+                afterTension,
+                headerConsumed,
+                type,
+            )
+        }
+        consumed[0] += headerConsumed[0]
+        consumed[1] += tensionDy + headerConsumed[1]
     }
 
     override fun onNestedScroll(
@@ -112,19 +168,38 @@ class XperiaAppBarScrollBehavior : AppBarLayout.Behavior {
         type: Int,
         consumed: IntArray,
     ) {
-        if (gate.shouldAllowNestedScroll(type == ViewCompat.TYPE_TOUCH, dyUnconsumed)) {
-            gate.recordPostScroll(dyUnconsumed)
-            super.onNestedScroll(
-                coordinatorLayout,
-                child,
-                target,
-                dxConsumed,
-                dyConsumed,
-                dxUnconsumed,
-                dyUnconsumed,
-                type,
-                consumed,
-            )
+        val isTouch = type == ViewCompat.TYPE_TOUCH
+        if (!gate.shouldAllowNestedScroll(isTouch, dyUnconsumed)) {
+            return
+        }
+        gate.recordPostScroll(dyUnconsumed)
+
+        val headerConsumed = IntArray(2)
+        super.onNestedScroll(
+            coordinatorLayout,
+            child,
+            target,
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            type,
+            headerConsumed,
+        )
+        consumed[0] += headerConsumed[0]
+        consumed[1] += headerConsumed[1]
+
+        val owner = phaseOwner ?: return
+        val remainingDy = dyUnconsumed - headerConsumed[1]
+        if (remainingDy == 0 || !isTouch) return
+
+        val post = XperiaScrollPhase.postScroll(-remainingDy.toFloat(), owner.liveCaps())
+        if (post.headerConsumed != 0f || post.stretchConsumed == 0f) return
+        val stretchDy = (-post.stretchConsumed).roundToInt()
+            .coerceIn(minOf(0, remainingDy), maxOf(0, remainingDy))
+        if (stretchDy != 0) {
+            owner.commitTension(post.nextTensionState)
+            consumed[1] += stretchDy
         }
     }
 
@@ -134,8 +209,12 @@ class XperiaAppBarScrollBehavior : AppBarLayout.Behavior {
         target: View,
         type: Int,
     ) {
-        val shouldSettle = gate.consumeSettleOnStop(type == ViewCompat.TYPE_TOUCH)
+        val isTouch = type == ViewCompat.TYPE_TOUCH
+        val shouldSettle = gate.consumeSettleOnStop(isTouch)
         super.onStopNestedScroll(coordinatorLayout, child, target, type)
+        if (isTouch) {
+            phaseOwner?.onNestedTouchScrollStopped()
+        }
         if (!shouldSettle) {
             return
         }

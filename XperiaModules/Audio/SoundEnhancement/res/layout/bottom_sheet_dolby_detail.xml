@@ -130,12 +130,16 @@
                     android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                     android:textColor="?android:attr/textColorPrimary" />
 
-                <HorizontalScrollView
+                <com.xperia.settings.ui.XperiaNestedHorizontalAxisGuard
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:overScrollMode="never"
-                    android:scrollbars="none">
+                    android:layout_marginTop="8dp">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:overScrollMode="never"
+                        android:scrollbars="none">
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/cg_dolby_ieq"
@@ -174,6 +178,7 @@
                         android:text="@string/sound_enhance_dolby_ieq_warm" />
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
+                </com.xperia.settings.ui.XperiaNestedHorizontalAxisGuard>
 
             <!-- Muc 2: Tang cuong giong thoai (Dialogue Enhancer) -->
             <LinearLayout
@@ -200,14 +205,20 @@
                     android:textColor="?attr/colorPrimary" />
             </LinearLayout>
 
-            <com.google.android.material.slider.Slider
-                android:id="@+id/slider_de"
+            <com.xperia.settings.ui.XperiaNestedHorizontalAxisGuard
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:stepSize="1.0"
-                android:valueFrom="0.0"
-                android:valueTo="6.0" />
+                android:layout_marginTop="4dp">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_de"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stepSize="1.0"
+                    android:valueFrom="0.0"
+                    android:valueTo="6.0" />
+
+            </com.xperia.settings.ui.XperiaNestedHorizontalAxisGuard>
 
             <!-- Muc 3: Bo can bang do hoa (Graphic Equalizer - 10 dai tan) -->
             <LinearLayout

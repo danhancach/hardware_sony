@@ -35,6 +35,7 @@ class DolbyGeqView @JvmOverloads constructor(
 
     private var selectedBand = -1
     private var isDragging = false
+    private var activePointerId = MotionEvent.INVALID_POINTER_ID
 
     var onGainsChangedListener: ((FloatArray) -> Unit)? = null
 
@@ -279,11 +280,16 @@ class DolbyGeqView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (!isEnabled) return false
+        if (!isEnabled) {
+            finishDragging(notifyListener = false)
+            return false
+        }
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
+                val pointerId = event.getPointerId(0)
                 val band = findClosestBand(event.x)
                 if (band != -1) {
+                    activePointerId = pointerId
                     selectedBand = band
                     isDragging = true
                     parent?.requestDisallowInterceptTouchEvent(true)
@@ -293,27 +299,63 @@ class DolbyGeqView @JvmOverloads constructor(
             }
             MotionEvent.ACTION_MOVE -> {
                 if (isDragging && selectedBand != -1) {
-                    // Cho phep keo ngang chuyen dai tan linh hoat
-                    val band = findClosestBand(event.x)
+                    val pointerIndex = event.findPointerIndex(activePointerId)
+                    if (pointerIndex < 0) return true
+                    val touchX = event.getX(pointerIndex)
+                    val touchY = event.getY(pointerIndex)
+                    // Cho phep keo ngang chuyen dai tan linh hoat theo dung pointer dang giu
+                    val band = findClosestBand(touchX)
                     if (band != -1) {
                         selectedBand = band
                     }
-                    updateGainFromY(selectedBand, event.y)
+                    updateGainFromY(selectedBand, touchY)
+                    return true
+                }
+            }
+            MotionEvent.ACTION_POINTER_UP -> {
+                if (isDragging) {
+                    val actionIndex = event.actionIndex
+                    val liftedId = event.getPointerId(actionIndex)
+                    if (liftedId == activePointerId) {
+                        val successorIndex = (0 until event.pointerCount).firstOrNull { it != actionIndex }
+                        if (successorIndex != null) {
+                            activePointerId = event.getPointerId(successorIndex)
+                            val band = findClosestBand(event.getX(successorIndex))
+                            if (band != -1) {
+                                selectedBand = band
+                            }
+                            updateGainFromY(selectedBand, event.getY(successorIndex))
+                        } else {
+                            finishDragging(notifyListener = true)
+                        }
+                    }
                     return true
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (isDragging) {
-                    isDragging = false
-                    selectedBand = -1
-                    parent?.requestDisallowInterceptTouchEvent(false)
-                    invalidate()
-                    onGainsChangedListener?.invoke(bandGains.clone())
+                    finishDragging(notifyListener = true)
                     return true
                 }
+                activePointerId = MotionEvent.INVALID_POINTER_ID
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    private fun finishDragging(notifyListener: Boolean) {
+        if (!isDragging && activePointerId == MotionEvent.INVALID_POINTER_ID) return
+        val wasDragging = isDragging
+        isDragging = false
+        selectedBand = -1
+        activePointerId = MotionEvent.INVALID_POINTER_ID
+        parent?.requestDisallowInterceptTouchEvent(false)
+        if (wasDragging) {
+            invalidate()
+            if (notifyListener) {
+                onGainsChangedListener?.invoke(bandGains.clone())
+            }
+        }
     }
 
     private fun findClosestBand(touchX: Float): Int {

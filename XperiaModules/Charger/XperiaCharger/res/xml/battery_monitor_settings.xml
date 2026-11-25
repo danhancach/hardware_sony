@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 XperiaLabs Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/battery_monitor_title">
+
+    <com.android.settingslib.widget.MainSwitchPreference
+        android:key="battery_monitor_enable"
+        android:title="@string/battery_monitor_enable"
+        android:defaultValue="true"
+        android:persistent="false" />
+
+    <com.android.settingslib.widget.LayoutPreference
+        android:key="battery_monitor_content"
+        android:layout="@layout/battery_monitor"
+        android:selectable="false"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false" />
+
+</PreferenceScreen>

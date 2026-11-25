@@ -92,14 +92,23 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- App List RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_apps"
+        <!-- App List RecyclerView duoc clip trong khung rieng de overscroll khong de len search card -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingStart="@dimen/sound_preference_card_margin_horizontal"
-            android:paddingEnd="@dimen/sound_preference_card_margin_horizontal"
-            android:paddingBottom="24dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="true"
+            android:clipToPadding="true">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_apps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingStart="@dimen/sound_preference_card_margin_horizontal"
+                android:paddingEnd="@dimen/sound_preference_card_margin_horizontal"
+                android:paddingBottom="24dp" />
+
+        </FrameLayout>
 
     </LinearLayout>
